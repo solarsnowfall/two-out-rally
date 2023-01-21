@@ -94,11 +94,25 @@ class Player extends Model
         'birth_season'
     ];
 
+    /**
+     * @return bool
+     */
+    public function isPitcher(): bool
+    {
+        return $this->position_id === Position::P;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
     public function rosterPosition()
     {
         return $this->hasOneThrough(RosterPosition::class, TeamPlayer::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
     public function team()
     {
         return $this->hasOneThrough(Team::class, TeamPlayer::class);

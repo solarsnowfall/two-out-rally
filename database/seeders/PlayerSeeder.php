@@ -35,9 +35,4 @@ class PlayerSeeder extends Seeder
             }
         }
     }
-
-    protected function height(int $position_id)
-    {
-
-    }
 }
