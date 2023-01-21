@@ -35,4 +35,18 @@ class RosterPosition extends Model
     {
         return $this->belongsTo(Position::class);
     }
+
+    public function randomizePositionIfMissing()
+    {
+        if ($this->position === null) {
+
+            $position_id = match($this->abbrv) {
+                'DH' => mt_rand(Position::CATCHER, Position::RIGHT_FIELDER),
+                'OF' => mt_rand(Position::LEFT_FIELDER, Position::RIGHT_FIELDER),
+                default => mt_rand(Position::FIRST_BASEMAN, Position::SHORTSTOP)
+            };
+
+            $this->position = Position::find($position_id);
+        }
+    }
 }

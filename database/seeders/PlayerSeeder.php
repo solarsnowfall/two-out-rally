@@ -22,12 +22,13 @@ class PlayerSeeder extends Seeder
             /** @var RosterPosition $position */
             foreach (RosterPosition::all() as $position) {
 
+                $position->randomizePositionIfMissing();
                 $height = $position->position->randomPlayerHeight();
                 $weight = $position->position->randomPlayerWeight($height['inches']);
 
                 $player = Player::factory()->make([
                     'age'               => $team->league->randomPlayerAge(),
-                    'position_id'       => $position->id,
+                    'position_id'       => $position->position->id,
                     'height'            => $height['inches'],
                     'weight'            => $weight['pounds']
                 ]);

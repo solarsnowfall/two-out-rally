@@ -7,10 +7,20 @@ use App\Models\Player\Pitcher;
 
 class AtBat
 {
+    /**
+     * @var Batter
+     */
     protected Batter $batter;
 
+    /**
+     * @var Pitcher
+     */
     protected Pitcher $pitcher;
 
+    /**
+     * @param Batter $batter
+     * @param Pitcher $pitcher
+     */
     public function __construct(Batter $batter, Pitcher $pitcher)
     {
         $this->batter = $batter;
@@ -28,8 +38,7 @@ class AtBat
         $lhp -= $this->pitcher->getAvoidLiner() * 0.113;
         $lhp += $this->pitcher->skill->induce_grounder * 0.296;
         $lhp -= $this->pitcher->skill->induce_popup * 0.354;
-
-        $lhp = min(max($lhp / 100, 0.437), 0.846);
+        $lhp = Chance::constrain($lhp / 100, 0.437, 0.846);
 
         return Chance::roll() > $lhp ? $this->highHit() : $this->lowHit();
     }
@@ -50,6 +59,9 @@ class AtBat
         return AtBatOutcome::Walk;
     }
 
+    /**
+     * @return HitVector
+     */
     public function hitVector(): HitVector
     {
         $vector = $this->batter->skill->bat_control * 0.2;
@@ -94,25 +106,23 @@ class AtBat
     {
         $power = $this->batter->skill->getFlyBallPower($bonus) * 0.2;
         $power -= $this->pitcher->skill->avoidFlyBallPower() * 0.2;
-        $power -= 13.7;
-        $power /= 100;
+        $power = Chance::constrain(($power + 13.7) / 100, -0.3, -0.049);
 
-        $power = min(max($power, -0.3), -0.049);
-        $distance = Chance::roll() + $power;
-        $distance = min(max($distance, 0), 1.0);
+        $distance = Chance::constrain(Chance::roll() + $power, 0, 1.0);
 
         return floor($distance * 4 + 3);
     }
 
+    /**
+     * @return bool
+     */
     protected function ballInPlay(): bool
     {
         $bip = $this->batter->getWalk() * 0.314;
         $bip -= $this->batter->getAvoidStrikeout() * 0.314;
         $bip -= $this->pitcher->getAvoidWalk() * 0.314;
         $bip += $this->pitcher->getStrikeout() * 0.314;
-        $bip += 26.3;
-
-        $bip = min(max($bip / 100, 0.097), 0.56);
+        $bip = Chance::constrain(($bip + 26.3) / 100, 0.097, 0.56);
 
         return Chance::roll() > $bip;
     }
@@ -124,7 +134,7 @@ class AtBat
     {
         $gb = 64.8 - $this->batter->getLiner() * 0.264;
         $gb += $this->pitcher->getAvoidLiner() * 0.264;
-        $gb = min(max($gb / 100, 0.511), 0.775);
+        $gb = Chance::constrain($gb / 100, 0.511, 0.755);
 
         return Chance::roll() > $gb ? HitType::LineDrive : HitType::GroundBall;
     }
@@ -136,13 +146,7 @@ class AtBat
     {
         $fb = 69.4 + $this->batter->skill->fly_ball * 0.102;
         $fb -= $this->pitcher->skill->induce_popup * 0.102;
-        $fb /= 100;
-
-        if ($fb < 0.592) {
-            $fb = 0.592;
-        } elseif ($fb > 0.796) {
-            $fb = 0.796;
-        }
+        $fb = Chance::constrain($fb / 100, 0.592, 0.796);
 
         return Chance::roll() > $fb ? HitType::PopUp : HitType::FlyBall;
     }
@@ -156,7 +160,7 @@ class AtBat
         $popup->type = HitType::PopUp;
         $roll = Chance::roll();
 
-        switch (Chance::roll()) {
+        switch ($roll) {
             case ($roll >= 0 && $roll <= 0.2):
                 $popup->position = FieldPosition::SecondBase;
                 break;
@@ -207,14 +211,7 @@ class AtBat
         $wp -= $this->pitcher->getAvoidWalk() * 0.314;
         $wp += $this->batter->getAvoidStrikeout() * 0.314;
         $wp -= $this->pitcher->getStrikeout() * 0.314;
-        $wp += 33.3;
-        $wp /= 100;
-
-        if ($wp > 0.6) {
-            $wp = 0.6;
-        } elseif ($wp < 0.1) {
-            $wp = 0.1;
-        }
+        $wp = Chance::constrain(($wp + 33.3) / 100, 0.1, 0.6);
 
         return Chance::roll() > $wp;
     }
