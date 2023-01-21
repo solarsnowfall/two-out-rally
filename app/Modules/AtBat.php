@@ -1,0 +1,221 @@
+<?php
+
+namespace App\Modules;
+
+use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
+
+class AtBat
+{
+    protected Batter $batter;
+
+    protected Pitcher $pitcher;
+
+    public function __construct(Batter $batter, Pitcher $pitcher)
+    {
+        $this->batter = $batter;
+        $this->pitcher = $pitcher;
+    }
+
+    /**
+     * @return HitType
+     */
+    public function hitType(): HitType
+    {
+        $lhp = 62.2 + $this->batter->getLiner() * 0.113;
+        $lhp += $this->batter->getGrounder() * 0.296;
+        $lhp += $this->batter->getFlyBall() * 0.354;
+        $lhp -= $this->pitcher->getAvoidLiner() * 0.113;
+        $lhp += $this->pitcher->skill->induce_grounder * 0.296;
+        $lhp -= $this->pitcher->skill->induce_popup * 0.354;
+
+        $lhp = min(max($lhp / 100, 0.437), 0.846);
+
+        return Chance::roll() > $lhp ? $this->highHit() : $this->lowHit();
+    }
+
+    /**
+     * @return AtBatOutcome
+     */
+    public function outcome(): AtBatOutcome
+    {
+        if ($this->ballInPlay()) {
+            return AtBatOutcome::Hit;
+        }
+
+        if ($this->struckOut()) {
+            return AtBatOutcome::Strikeout;
+        }
+
+        return AtBatOutcome::Walk;
+    }
+
+    public function hitVector(): HitVector
+    {
+        $vector = $this->batter->skill->bat_control * 0.2;
+        $vector -= $this->batter->skill->pull * 0.2;
+        $vector /= 100;
+
+        $direction = Chance::roll() - $vector;
+
+        if ($direction < 0) {
+            $direction = 0.2;
+        } elseif ($direction > 1) {
+            $direction = 0.85;
+        }
+
+        if ($this->batter->handedness == Handedness::Left) {
+            $direction = 1.0 - $direction;
+        }
+
+        switch ($direction) {
+            case ($direction >= 0 && $direction <= 0.1):
+                return HitVector::A;
+            case ($direction > 0.1 && $direction <= 0.286):
+                return HitVector::B;
+            case ($direction > 0.286 && $direction <= 0.429):
+                return HitVector::C;
+            case ($direction > 0.429 && $direction <= 0.573):
+                return HitVector::D;
+            case ($direction > 0.573 && $direction <= 0.716):
+                return HitVector::E;
+            case ($direction > 0.716 && $direction <= 0.899):
+                return HitVector::F;
+            default:
+                return HitVector::G;
+        }
+    }
+
+    /**
+     * @param int $bonus
+     * @return int
+     */
+    public function flyBallDistance(int $bonus = 0): int
+    {
+        $power = $this->batter->skill->getFlyBallPower($bonus) * 0.2;
+        $power -= $this->pitcher->skill->avoidFlyBallPower() * 0.2;
+        $power -= 13.7;
+        $power /= 100;
+
+        $power = min(max($power, -0.3), -0.049);
+        $distance = Chance::roll() + $power;
+        $distance = min(max($distance, 0), 1.0);
+
+        return floor($distance * 4 + 3);
+    }
+
+    protected function ballInPlay(): bool
+    {
+        $bip = $this->batter->getWalk() * 0.314;
+        $bip -= $this->batter->getAvoidStrikeout() * 0.314;
+        $bip -= $this->pitcher->getAvoidWalk() * 0.314;
+        $bip += $this->pitcher->getStrikeout() * 0.314;
+        $bip += 26.3;
+
+        $bip = min(max($bip / 100, 0.097), 0.56);
+
+        return Chance::roll() > $bip;
+    }
+
+    /**
+     * @return HitType
+     */
+    protected function lowHit(): HitType
+    {
+        $gb = 64.8 - $this->batter->getLiner() * 0.264;
+        $gb += $this->pitcher->getAvoidLiner() * 0.264;
+        $gb = min(max($gb / 100, 0.511), 0.775);
+
+        return Chance::roll() > $gb ? HitType::LineDrive : HitType::GroundBall;
+    }
+
+    /**
+     * @return HitType
+     */
+    protected function highHit(): HitType
+    {
+        $fb = 69.4 + $this->batter->skill->fly_ball * 0.102;
+        $fb -= $this->pitcher->skill->induce_popup * 0.102;
+        $fb /= 100;
+
+        if ($fb < 0.592) {
+            $fb = 0.592;
+        } elseif ($fb > 0.796) {
+            $fb = 0.796;
+        }
+
+        return Chance::roll() > $fb ? HitType::PopUp : HitType::FlyBall;
+    }
+
+    /**
+     * @return PopUp
+     */
+    protected function popup(): PopUp
+    {
+        $popup = new PopUp();
+        $popup->type = HitType::PopUp;
+        $roll = Chance::roll();
+
+        switch (Chance::roll()) {
+            case ($roll >= 0 && $roll <= 0.2):
+                $popup->position = FieldPosition::SecondBase;
+                break;
+            case ($roll > 0.2 && $roll <= 0.4):
+                $popup->position = FieldPosition::Shortstop;
+                break;
+            case ($roll > 0.4 && $roll <= 0.5):
+                $popup->position = FieldPosition::FirstBase;
+                break;
+            case ($roll > 0.5 && $roll <= 0.6):
+                $popup->position = FieldPosition::ThirdBase;
+                break;
+            case ($roll > 0.6 && $roll <= 0.7):
+                $popup->position = FieldPosition::Catcher;
+                break;
+            case ($roll > 0.7 && $roll <= 0.74):
+                $popup->position = FieldPosition::Pitcher;
+                break;
+            case ($roll > 0.74 && $roll <= 0.8):
+                $popup->position = FieldPosition::LeftField;
+                break;
+            case ($roll > 0.8 && $roll <= 0.87):
+                $popup->position = FieldPosition::CenterField;
+                break;
+            case ($roll > 0.87 && $roll <= 0.97):
+                $popup->position = FieldPosition::RightField;
+                break;
+            case ($roll > 0.97 && $roll <= 0.98):
+                $popup->type = HitType::BaseHit;
+                $popup->position = FieldPosition::LeftField;
+                break;
+            case ($roll > 0.98 && $roll <= 0.99):
+                $popup->type = HitType::BaseHit;
+                $popup->position = FieldPosition::CenterField;
+                break;
+            case ($roll > 0.9 && $roll <= 1.0):
+                $popup->type = HitType::BaseHit;
+                $popup->position = FieldPosition::RightField;
+                break;
+        }
+
+        return $popup;
+    }
+
+    protected function struckOut(): bool
+    {
+        $wp = $this->batter->getWalk() * 0.314;
+        $wp -= $this->pitcher->getAvoidWalk() * 0.314;
+        $wp += $this->batter->getAvoidStrikeout() * 0.314;
+        $wp -= $this->pitcher->getStrikeout() * 0.314;
+        $wp += 33.3;
+        $wp /= 100;
+
+        if ($wp > 0.6) {
+            $wp = 0.6;
+        } elseif ($wp < 0.1) {
+            $wp = 0.1;
+        }
+
+        return Chance::roll() > $wp;
+    }
+}
