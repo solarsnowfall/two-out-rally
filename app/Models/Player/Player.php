@@ -2,12 +2,14 @@
 
 namespace App\Models\Player;
 
+use App\Models\Stats\DefensiveStat;
 use App\Models\Team\RosterPosition;
 use App\Models\Team\Team;
 use App\Models\Team\TeamPlayer;
-use App\Modules\SkillBlender;
+use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Parental\HasChildren;
 
 /**
  * App\Models\Player\Player
@@ -64,11 +66,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Player whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Player whereWeight($value)
  * @mixin \Eloquent
+ * @property string $height_class
+ * @property string $weight_class
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereHeightClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereWeightClass($value)
+ * @method static \Database\Factories\Player\PlayerFactory factory(...$parameters)
+ * @property int|null $team_player_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereTeamPlayerId($value)
+ * @property-read TeamPlayer|null $teamPosition
+ * @property string $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereType($value)
  */
 class Player extends Model
 {
     use HasFactory;
-    use SkillBlender;
+    use HasChildren;
 
     protected $fillable = [
         'user_id',
@@ -102,14 +114,37 @@ class Player extends Model
         return $this->position_id === Position::P;
     }
 
+    public function teamPlayer()
+    {
+        return $this->belongsTo(TeamPlayer::class, 'player_id', 'id');
+    }
+
+    public function defensiveStats()
+    {
+        return $this->hasMany(DefensiveStat::class);
+    }
 
     public function rosterPosition()
     {
-        return $this->hasOneThrough(RosterPosition::class, TeamPlayer::class);
+        return $this->hasOneThrough(
+            RosterPosition::class,
+            TeamPlayer::class,
+            'player_id',
+            'id',
+            'id',
+            'roster_position_id'
+        );
     }
 
     public function team()
     {
-        return $this->hasOneThrough(Team::class, TeamPlayer::class);
+        return $this->hasOneThrough(
+            Team::class,
+            TeamPlayer::class,
+            'player_id',
+            'id',
+            'id',
+            'team_id'
+        );
     }
 }

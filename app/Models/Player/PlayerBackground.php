@@ -24,10 +24,17 @@ class PlayerBackground extends Model
 {
     use HasFactory;
 
+    const QUARTERBACK = 1;
+    const PREP_SCHOOL = 2;
+    const JAPANESE_HIGH_SCHOOL = 3;
+    const STREET_PLAYER = 4;
+    const TRACK_AND_FIELD = 5;
+    const LATIN_ACADEMY_GRAD = 6;
+
     protected $fillable = ['name', 'description'];
 
     public static function randomId()
     {
-        return self::inRandomOrder()->first(['id'])->id;
+        return mt_rand(static::QUARTERBACK, static::LATIN_ACADEMY_GRAD);
     }
 }

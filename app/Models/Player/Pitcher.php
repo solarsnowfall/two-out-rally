@@ -3,6 +3,9 @@
 namespace App\Models\Player;
 
 
+use App\Models\Stats\PitchingStat;
+use Parental\HasParent;
+
 /**
  * App\Models\Player\Pitcher
  *
@@ -59,47 +62,32 @@ namespace App\Models\Player;
  * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereWeight($value)
  * @mixin \Eloquent
+ * @property string $height_class
+ * @property string $weight_class
+ * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereHeightClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereWeightClass($value)
+ * @method static \Database\Factories\Player\PitcherFactory factory(...$parameters)
+ * @property int|null $team_player_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereTeamPlayerId($value)
+ * @property-read \App\Models\Team\TeamPlayer|null $teamPosition
+ * @property string $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereType($value)
  */
 class Pitcher extends Player
 {
+    use HasParent;
+
     protected $table = 'players';
+
+    private int $pitches = 0;
 
     public function skill()
     {
         return $this->hasOne(PitcherSkill::class, 'player_id', 'id');
     }
 
-    public function getAvoidFlyBallPower(): int
+    public function pitchingStats()
     {
-        return $this->skillBlender($this->skill->induce_popup, $this->skill->induce_grounder);
-    }
-
-    public function getAvoidGrounder(): int
-    {
-        return $this->skillBlender($this->skill->release, $this->skill->pickoff, $this->skill->explosiveness);
-    }
-
-    public function getAvoidLiner(): int
-    {
-        return $this->skillBlender(
-            $this->skill->horizontal_break,
-            $this->skill->induce_grounder,
-            $this->skill->paint_corner
-        );
-    }
-
-    public function getAvoidWalk(): int
-    {
-        return $this->skillBlender($this->skill->paint_corner, $this->skill->mechanics, $this->skill->release);
-    }
-
-    public function getAvoidWildPitch(): int
-    {
-        return $this->skillBlender($this->skill->mechanics, $this->skill->vertical_break);
-    }
-
-    public function getStrikeout(): int
-    {
-        return $this->skillBlender($this->skill->power, $this->skill->explosiveness, $this->skill->vertical_break);
+        return $this->hasMany(PitchingStat::class);
     }
 }

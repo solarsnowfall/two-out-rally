@@ -24,10 +24,18 @@ class PlayerPersonality extends Model
 {
     use HasFactory;
 
+    const THE_DUDE = 1;
+    const THE_SHOWBOAT = 2;
+    const THE_HOTHEAD = 3;
+    const THE_CAPTAIN = 4;
+    const THE_PROFESSIONAL = 5;
+    const THE_SURLY = 6;
+    const THE_WHIZ_KID = 7;
+
     protected $fillable = ['name', 'description'];
 
     public static function randomId(): int
     {
-        return self::inRandomOrder()->first(['id'])->id;
+        return mt_rand(static::THE_DUDE, static::THE_WHIZ_KID);
     }
 }

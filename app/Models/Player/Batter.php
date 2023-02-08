@@ -2,6 +2,9 @@
 
 namespace App\Models\Player;
 
+use App\Models\Stats\DefensiveStat;
+use Parental\HasParent;
+
 /**
  * App\Models\Player\Batter
  *
@@ -58,9 +61,21 @@ namespace App\Models\Player;
  * @method static \Illuminate\Database\Eloquent\Builder|Batter whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Batter whereWeight($value)
  * @mixin \Eloquent
+ * @property string $height_class
+ * @property string $weight_class
+ * @method static \Illuminate\Database\Eloquent\Builder|Batter whereHeightClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Batter whereWeightClass($value)
+ * @method static \Database\Factories\Player\BatterFactory factory(...$parameters)
+ * @property int|null $team_player_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Batter whereTeamPlayerId($value)
+ * @property-read \App\Models\Team\TeamPlayer|null $teamPosition
+ * @property string $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Batter whereType($value)
  */
 class Batter extends Player
 {
+    use HasParent;
+
     protected $table = 'players';
 
     /**
@@ -71,98 +86,8 @@ class Batter extends Player
         return $this->hasOne(BatterSkill::class, 'player_id', 'id');
     }
 
-    public function getAvoidStrikeout(): int
+    public function offensiveStats()
     {
-        return $this->skillBlender($this->skill->bat_control, $this->skill->ground_ball, $this->skill->reaction);
-    }
-
-    public function getBaseRunning(): int
-    {
-        return $this->skillBlender($this->skill->speed, $this->skill->discipline);
-    }
-
-    public function getBlockPlate(): int
-    {
-        return $this->skillBlender($this->skill->lower_body, $this->skill->reaction);
-    }
-
-    public function getDefensiveRange(): int
-    {
-        return $this->skillBlender($this->skill->grace, $this->skill->speed);
-    }
-
-    public function getExtraBases(Batter $batter): float
-    {
-        $skill = $this->getThrowingStrength() * 0.2;
-        $skill += $batter->skill->getBaseRunning() * 0.2;
-
-        return $skill / 100;
-    }
-
-    public function getFieldCleanly(): int
-    {
-        return $this->skillBlender($this->skill->reaction, $this->skill->grace, $this->skill->lower_body);
-    }
-
-    public function getFieldLineDrive(): float
-    {
-        $skill = $this->getFieldCleanly() * 0.15;
-        $skill += $this->getDefensiveRange() * 0.05;
-
-        return $skill / 100;
-    }
-
-    public function getFieldLineDriveOutfield(Batter $batter): float
-    {
-        $skill = $this->getDefensiveRange() * 0.15;
-        $skill += $this->getFieldCleanly() * 0.05;
-        $skill -= $batter->getLineDrivePower() * 0.2;
-
-        return $skill / 100;
-    }
-
-    public function getFieldGroundBall(Batter $batter, Pitcher $pitcher): float
-    {
-        $skill = $this->getDefensiveRange() * 0.15;
-        $skill += $this->getFieldCleanly() * 0.05;
-        $skill -= $batter->getGrounder() * 0.4;
-        $skill += $pitcher->getAvoidGrounder() * 0.2;
-
-        return $skill / 100;
-    }
-
-    public function getFlyBall(): int
-    {
-        return $this->skillBlender($this->skill->fly_ball, $this->skill->reaction);
-    }
-
-    public function getFlyBallPower(int $bonus = 0): int
-    {
-        return $this->skillBlender($this->skill->pull, $this->skill->fly_ball) + $bonus;
-    }
-
-    public function getGrounder(): int
-    {
-        return $this->skillBlender($this->skill->ground_ball, $this->skill->speed, $this->skill->lower_body);
-    }
-
-    public function getLiner(): int
-    {
-        return $this->skillBlender($this->skill->line_drive, $this->skill->accuracy, $this->skill->pull);
-    }
-
-    public function getLineDrivePower(): int
-    {
-        return $this->skillBlender($this->skill->arm_strength, $this->skill->bat_control);
-    }
-
-    public function getThrowingStrength(): int
-    {
-        return $this->skillBlender($this->skill->arm_strength, $this->skill->grace);
-    }
-
-    public function getWalk(): int
-    {
-        return $this->skillBlender($this->skill->discipline, $this->skill->lower_body);
+        return $this->hasMany(DefensiveStat::class);
     }
 }

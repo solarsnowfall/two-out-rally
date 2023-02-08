@@ -25,7 +25,7 @@ class LeagueSeeder extends Seeder
                 'Human' => [1, 2, 3, 4]
             ],
             'WBL' => [
-                'Human' => [4]
+                'Human' => [5]
             ]
         ];
 

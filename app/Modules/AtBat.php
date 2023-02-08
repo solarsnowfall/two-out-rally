@@ -13,6 +13,21 @@ class AtBat
     protected Batter $batter;
 
     /**
+     * @var HitType
+     */
+    protected HitType $hitType;
+
+    /**
+     * @var HitVector
+     */
+    protected HitVector $hitVector;
+
+    /**
+     * @var AtBatOutcome
+     */
+    protected AtBatOutcome $outcome;
+
+    /**
      * @var Pitcher
      */
     protected Pitcher $pitcher;
@@ -25,6 +40,37 @@ class AtBat
     {
         $this->batter = $batter;
         $this->pitcher = $pitcher;
+        $this->outcome = $this->outcome();
+
+        if ($this->outcome === AtBatOutcome::Hit) {
+            $this->hitType = $this->hitType();
+            $this->hitVector = $this->hitVector();
+
+        }
+    }
+
+    /**
+     * @return HitType
+     */
+    public function getHitType(): HitType
+    {
+        return $this->hitType;
+    }
+
+    /**
+     * @return AtBatOutcome
+     */
+    public function getOutcome(): AtBatOutcome
+    {
+        return $this->outcome;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPitchCount(): int
+    {
+        return $this->outcome->pitchCount();
     }
 
     /**
@@ -104,7 +150,7 @@ class AtBat
      */
     public function flyBallDistance(int $bonus = 0): int
     {
-        $power = $this->batter->skill->getFlyBallPower($bonus) * 0.2;
+        $power = $this->batter->skill->flyballPower($bonus) * 0.2;
         $power -= $this->pitcher->skill->avoidFlyBallPower() * 0.2;
         $power = Chance::constrain(($power + 13.7) / 100, -0.3, -0.049);
 
@@ -119,8 +165,8 @@ class AtBat
     protected function ballInPlay(): bool
     {
         $bip = $this->batter->getWalk() * 0.314;
-        $bip -= $this->batter->getAvoidStrikeout() * 0.314;
-        $bip -= $this->pitcher->getAvoidWalk() * 0.314;
+        $bip -= $this->batter->skill->avoidStrikeout() * 0.314;
+        $bip -= $this->pitcher->skill->avoidWalk() * 0.314;
         $bip += $this->pitcher->getStrikeout() * 0.314;
         $bip = Chance::constrain(($bip + 26.3) / 100, 0.097, 0.56);
 

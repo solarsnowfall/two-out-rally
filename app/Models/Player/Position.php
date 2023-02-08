@@ -73,7 +73,6 @@ class Position extends Model
         $class = $this->sizeClass();
         $min = floor(140 + 4.375 * ($inches - 66));
         $max = floor(180 + 7.5 * ($inches - 66));
-        echo "$min $max\n";
 
         $pounds = mt_rand(
             floor($min + ($class + 1) * ($max - $min) / 4),

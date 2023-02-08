@@ -2,7 +2,8 @@
 
 namespace App\Models\Player;
 
-use App\Modules\SkillBlender;
+use App\Modules\Chance;
+use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,11 +49,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereStealing($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Player\Batter $player
  */
 class BatterSkill extends Model
 {
     use HasFactory;
-    use SkillBlender;
+    use BlendsSkills;
 
     protected $fillable = [
         'player_id',
@@ -70,40 +72,50 @@ class BatterSkill extends Model
         'accuracy'
     ];
 
-    public function getAvoidStrikeout(): int
+    public function player()
     {
-        return $this->skillBlender($this->bat_control, $this->ground_ball, $this->reaction);
+        return $this->belongsTo(Batter::class);
     }
 
-    public function getBaseRunning(): int
+    public function batter()
     {
-        return $this->skillBlender($this->speed, $this->discipline);
+        return $this->player;
     }
 
-    public function getBlockPlate(): int
+    public function avoidStrikeout(): int
     {
-        return $this->skillBlender($this->lower_body, $this->reaction);
+        return $this->blend($this->bat_control, $this->ground_ball, $this->reaction);
     }
 
-    public function getDefensiveRange(): int
+    public function baseRunning(): int
     {
-        return $this->skillBlender($this->grace, $this->speed);
+        return $this->blend($this->speed, $this->discipline);
     }
 
-    public function getExtraBases(BatterSkill $batterSkill): float
+    public function blockPlate(): int
+    {
+        return $this->blend($this->lower_body, $this->reaction);
+    }
+
+    public function defensiveRange(): int
+    {
+        return $this->blend($this->grace, $this->speed);
+    }
+
+    public function extraBases(Batter $fielder): float
     {
         $skill = $this->getThrowingStrength() * 0.2;
-        $skill -= $batterSkill->getBaseRunning() * 0.2;
+        $skill -= $fielder->skill->getBaseRunning() * 0.2;
 
         return $skill / 100;
     }
 
-    public function getFieldCleanly(): int
+    public function fieldCleanly(): int
     {
-        return $this->skillBlender($this->reaction, $this->grace, $this->lower_body);
+        return $this->blend($this->reaction, $this->grace, $this->lower_body);
     }
 
-    public function getFieldLineDrive(): float
+    public function fieldLineDrive(): float
     {
         $skill = $this->getFieldCleanly() * 0.15;
         $skill += $this->getDefensiveRange() * 0.05;
@@ -111,7 +123,7 @@ class BatterSkill extends Model
         return $skill / 100;
     }
 
-    public function getFieldLineDriveOutfield(BatterSkill $batterSkill): float
+    public function fieldLineDriveOutfield(BatterSkill $batterSkill): float
     {
         $skill = $this->getDefensiveRange() * 0.15;
         $skill += $this->getFieldCleanly() * 0.05;
@@ -120,38 +132,38 @@ class BatterSkill extends Model
         return $skill / 100;
     }
 
-    public function getFlyBall(): int
+    public function flyBall(): int
     {
-        return $this->skillBlender($this->fly_ball, $this->reaction);
+        return $this->blend($this->fly_ball, $this->reaction);
     }
 
-    public function getFlyBallPower(int $bonus = 0): int
+    public function flyBallPower(int $bonus = 0): int
     {
-        return $this->skillBlender($this->pull, $this->fly_ball) + $bonus;
+        return $this->blend($this->pull, $this->fly_ball) + $bonus;
     }
 
-    public function getGrounder(): int
+    public function grounder(): int
     {
-        return $this->skillBlender($this->ground_ball, $this->speed, $this->lower_body);
+        return $this->blend($this->ground_ball, $this->speed, $this->lower_body);
     }
 
-    public function getLiner(): int
+    public function liner(): int
     {
-        return $this->skillBlender($this->line_drive, $this->accuracy, $this->pull);
+        return $this->blend($this->line_drive, $this->accuracy, $this->pull);
     }
 
-    public function getLineDrivePower(): int
+    public function lineDrivePower(): int
     {
-        return $this->skillBlender($this->arm_strength, $this->bat_control);
+        return $this->blend($this->arm_strength, $this->bat_control);
     }
 
-    public function getThrowingStrength(): int
+    public function throwingStrength(): int
     {
-        return $this->skillBlender($this->arm_strength, $this->grace);
+        return $this->blend($this->arm_strength, $this->grace);
     }
 
-    public function getWalk(): int
+    public function walk(): int
     {
-        return $this->skillBlender($this->discipline, $this->lower_body);
+        return $this->blend($this->discipline, $this->lower_body);
     }
 }

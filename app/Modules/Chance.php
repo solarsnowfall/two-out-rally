@@ -5,11 +5,12 @@ namespace App\Modules;
 class Chance
 {
     /**
+     * @param int $precision
      * @return float
      */
-    public static function roll(): float
+    public static function roll(int $precision = 3): float
     {
-        return round(lcg_value(), 3);
+        return round(lcg_value(), $precision);
     }
 
     /**

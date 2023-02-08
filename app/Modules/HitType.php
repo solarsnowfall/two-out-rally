@@ -2,11 +2,11 @@
 
 namespace App\Modules;
 
-enum HitType
+enum HitType: string
 {
-    case BaseHit;
-    case FlyBall;
-    case GroundBall;
-    case LineDrive;
-    case PopUp;
+    case BaseHit = 'base hit';
+    case FlyBall = 'fly ball';
+    case GroundBall = 'ground ball';
+    case LineDrive = 'line drive';
+    case PopUp = 'pop up';
 }

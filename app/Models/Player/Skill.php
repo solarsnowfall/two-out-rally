@@ -29,5 +29,33 @@ class Skill extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = ['is_pitcher', 'label', 'name', 'attribute', 'description'];
+
+    /**
+     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function batterSkills()
+    {
+        return static::where('is_pitcher', '=', 0)->get();
+    }
+
+    /**
+     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function pitcherSkills()
+    {
+        return static::where('is_pitcher', '=', 1)->get();
+    }
+
+    /**
+     * @param string $class
+     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function skillsFor(string $class)
+    {
+        return $class === Batter::class ? static::batterSkills() : static::pitcherSkills();
+    }
 }

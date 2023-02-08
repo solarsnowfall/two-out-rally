@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type', ['Casual', 'Open', 'WBL'])->index();
             $table->enum('controlled', ['CPU', 'Human'])->index();
-            $table->enum('level', [1, 2, 3, 4])->index();
+            $table->enum('level', [1, 2, 3, 4, 5])->index();
 
             $table->timestamp('created_at')
                 ->index()

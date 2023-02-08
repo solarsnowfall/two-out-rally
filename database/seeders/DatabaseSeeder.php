@@ -32,7 +32,10 @@ class DatabaseSeeder extends Seeder
             PlayerFirstNameSeeder::class,
             PlayerLastNameSeeder::class,
             LeagueSeeder::class,
-            TeamSeeder::class
+            TeamSeeder::class,
+            SeasonSeeder::class,
+            PlayerSeeder::class,
+            StatSeeder::class
         ]);
     }
 }

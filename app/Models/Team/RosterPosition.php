@@ -2,6 +2,8 @@
 
 namespace App\Models\Team;
 
+use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
 use App\Models\Player\Position;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +29,32 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RosterPosition extends Model
 {
+    const STARTING_PITCHER1 = 1;
+    const STARTING_PITCHER2 = 2;
+    const STARTING_PITCHER3 = 3;
+    const STARTING_PITCHER4 = 4;
+    const STARTING_PITCHER5 = 5;
+    const LONG_RELIEF_PITCHER = 6;
+    const MIDDLE_RELIEF_PITCHER1 = 7;
+    const MIDDLE_RELIEF_PITCHER2 = 8;
+    const MIDDLE_RELIEF_PITCHER3 = 9;
+    const MIDDLE_RELIEF_PITCHER4 = 10;
+    const SETUP_PITCHER1 = 11;
+    const SETUP_PITCHER2 = 12;
+    const CLOSING_PITCHER = 13;
+    const CATCHER = 14;
+    const FIRST_BASEMAN = 15;
+    const SECOND_BASEMAN = 16;
+    const THIRD_BASEMAN = 17;
+    const SHORTSTOP = 18;
+    const LEFT_FIELDER = 19;
+    const CENTER_FIELDER = 20;
+    const RIGHT_FIELDER = 21;
+    const BACKUP_CATCHER = 22;
+    const DESIGNATED_HITTER = 23;
+    const BACKUP_INFIELDER = 24;
+    const BACKUP_OUTFIELDER = 25;
+
     use HasFactory;
 
     protected $fillable = ['position_id', 'abbrv', 'name'];
@@ -48,5 +76,10 @@ class RosterPosition extends Model
 
             $this->position = Position::find($position_id);
         }
+    }
+
+    public function getPlayerModel(): string
+    {
+        return $this->position->id == Position::PITCHER ? Pitcher::class : Batter::class;
     }
 }

@@ -26,4 +26,17 @@ use Illuminate\Database\Eloquent\Model;
 class Season extends Model
 {
     use HasFactory;
+
+    /**
+     * @return bool
+     */
+    public function isCurrent(): bool
+    {
+        return self::orderBy('id', 'desc')->first(['id'])->id === $this->id;
+    }
+
+    public static function getCurrent()
+    {
+        return self::orderBy('id', 'desc')->first();
+    }
 }

@@ -3,6 +3,9 @@
 namespace App\Models\Team;
 
 use App\Models\League;
+use App\Models\Player\Batter;
+use App\Models\Player\Player;
+use App\Models\Player\Position;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,20 +42,49 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereWins($value)
  * @mixin \Eloquent
+ * @property-read League $league
+ * @property-read \Illuminate\Database\Eloquent\Collection|Player[] $players
+ * @property-read int|null $players_count
+ * @property array|null $default_lineup
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereDefaultLineup($value)
  */
 class Team extends Model
 {
     use HasFactory;
 
-    protected $table = 'teams';
+    protected $casts = [
+        'default_lineup' => 'array'
+    ];
 
     public function league()
     {
-        $this->belongsTo(League::class);
+        return $this->belongsTo(League::class);
     }
 
-    public function roster()
+    public function players()
     {
-        return $this->hasMany(TeamPlayer::class);
+        return $this->hasManyThrough(
+            Player::class,
+            TeamPlayer::class,
+            'team_id',
+            'id',
+            'id',
+            'id'
+        );
+    }
+
+    public function batters()
+    {
+        return $this->players()->where('players.position_id', '>', Position::PITCHER);
+    }
+
+    public function pitchers()
+    {
+        return $this->players()->where('players.position_id', '=', Position::PITCHER);
+    }
+
+    public function getDefaultLineup(): array
+    {
+        return json_decode($this->default_lineup, true);
     }
 }

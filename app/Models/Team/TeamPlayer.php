@@ -2,7 +2,10 @@
 
 namespace App\Models\Team;
 
+use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
 use App\Models\Player\Player;
+use App\Models\Player\Position;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +28,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TeamPlayer whereTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TeamPlayer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $id
+ * @method static \Illuminate\Database\Eloquent\Builder|TeamPlayer whereId($value)
+ * @property-read \App\Models\Team\RosterPosition|null $position
  */
 class TeamPlayer extends Model
 {
@@ -37,6 +43,11 @@ class TeamPlayer extends Model
 
     public function player()
     {
-        return $this->hasOne(Player::class);
+        return $this->hasOne(Player::class, 'id', 'player_id');
+    }
+
+    public function position()
+    {
+        return $this->hasOne(RosterPosition::class, 'id', 'roster_position_id');
     }
 }

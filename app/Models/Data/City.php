@@ -2,6 +2,7 @@
 
 namespace App\Models\Data;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,4 +24,9 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use HasFactory;
+
+    public function cityAndState(): string
+    {
+        return "$this->name, $this->state";
+    }
 }

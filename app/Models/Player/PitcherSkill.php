@@ -2,7 +2,7 @@
 
 namespace App\Models\Player;
 
-use App\Modules\SkillBlender;
+use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,11 +48,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherSkill whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherSkill whereVerticalBreak($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Player\Pitcher $player
  */
 class PitcherSkill extends Model
 {
     use HasFactory;
-    use SkillBlender;
+    use BlendsSkills;
 
     protected $fillable = [
         'player_id',
@@ -70,35 +71,43 @@ class PitcherSkill extends Model
         'pickoff'
     ];
 
+    public function player()
+    {
+        return $this->belongsTo(Pitcher::class);
+    }
+
+    public function pitcher()
+    {
+        return $this->player;
+    }
+
     public function avoidFlyBallPower(): int
     {
-        return $this->skillBlender($this->induce_popup, $this->induce_grounder);
+        return $this->blend($this->induce_popup, $this->induce_grounder);
     }
 
     public function avoidGrounder(): int
     {
-        return $this->skillBlender($this->release, $this->pickoff, $this->explosiveness);
+        return $this->blend($this->release, $this->pickoff, $this->explosiveness);
     }
 
     public function avoidLiner(): int
     {
-        return $this->skillBlender($this->horizontal_break, $this->induce_grounder, $this->paint_corner);
+        return $this->blend($this->horizontal_break, $this->induce_grounder, $this->paint_corner);
     }
 
     public function avoidWalk(): int
     {
-        return $this->skillBlender($this->paint_corner, $this->mechanics, $this->release);
+        return $this->blend($this->paint_corner, $this->mechanics, $this->release);
     }
 
     public function avoidWildPitch(): int
     {
-        return $this->skillBlender($this->mechanics, $this->vertical_break);
+        return $this->blend($this->mechanics, $this->vertical_break);
     }
 
-    public function getStrikeout(): int
+    public function strikeout(): int
     {
-        return $this->skillBlender($this->power, $this->explosiveness, $this->vertical_break);
+        return $this->blend($this->power, $this->explosiveness, $this->vertical_break);
     }
-
-
 }
