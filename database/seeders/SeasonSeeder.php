@@ -15,6 +15,7 @@ class SeasonSeeder extends Seeder
      */
     public function run()
     {
-        Season::insert(['day' => 1]);
+        $season = Season::factory();
+        $season->create();
     }
 }

@@ -22,10 +22,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Season whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Season whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property array $day_order
+ * @method static \Database\Factories\SeasonFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Season whereDayOrder($value)
  */
 class Season extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'day_order' => 'json'
+    ];
+
+    public static function currentSeason(): Season
+    {
+        return Season::orderBy('id', 'desc')->first();
+    }
 
     /**
      * @return bool
@@ -35,8 +47,8 @@ class Season extends Model
         return self::orderBy('id', 'desc')->first(['id'])->id === $this->id;
     }
 
-    public static function getCurrent()
+    public function dayOffset(): int
     {
-        return self::orderBy('id', 'desc')->first();
+        return $this->day_order[$this->day];
     }
 }

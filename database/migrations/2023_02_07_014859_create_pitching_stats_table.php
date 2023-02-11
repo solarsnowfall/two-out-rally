@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('player_id')->index();
             $table->unsignedBigInteger('team_id')->index();
             $table->unsignedBigInteger('season_id')->index();
+            $table->boolean('active')->default(true)->index();
 
             $table->unsignedTinyInteger('w')->default(0);
             $table->unsignedTinyInteger('l')->default(0);

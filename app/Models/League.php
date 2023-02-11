@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\Team[] $teams
  * @property-read int|null $teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Matchup[] $matchups
+ * @property-read int|null $matchups_count
  */
 class League extends Model
 {
@@ -46,7 +48,7 @@ class League extends Model
 
     public function teams()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasmany(Team::class);
     }
 
     /**
@@ -65,6 +67,11 @@ class League extends Model
     public function averagePlayerLevel(): int
     {
         return floor(($this->minPlayerLevel() + $this->maxPlayerLevel()) / 2);
+    }
+
+    public function matchups()
+    {
+        return $this->hasMany(Matchup::class);
     }
 
     public function maxPlayerLevel(): int

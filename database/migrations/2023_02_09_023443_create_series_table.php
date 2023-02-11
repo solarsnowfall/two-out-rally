@@ -13,25 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('seasons', function (Blueprint $table) {
-
+        Schema::create('series', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('day')->default(0);
-            $table->json('day_order');
+            $table->unsignedBigInteger('season_id')->index();
+            $table->unsignedTinyInteger('day')->index();
 
             $table->timestamp('created_at')
                 ->index()
                 ->nullable()
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
 
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
-
-            $table->timestamp('completed_at')
-                ->index()
-                ->nullable();
+            $table->foreign('season_id')->references('id')->on('seasons');
         });
     }
 
@@ -42,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seasons');
+        Schema::dropIfExists('series');
     }
 };

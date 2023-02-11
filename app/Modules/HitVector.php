@@ -37,6 +37,22 @@ enum HitVector: string
         };
     }
 
+    public function grid(): array
+    {
+        $grid = [];
+
+        for ($i=0; $i<=6; $i++) {
+            $grid[] = $this->value . $i;
+        }
+
+        return $grid;
+    }
+
+    public function gridPosition(int $distance): string
+    {
+        return $this->value . $distance;
+    }
+
     protected function distancePrefix(int $distance): string
     {
         return match($distance) {

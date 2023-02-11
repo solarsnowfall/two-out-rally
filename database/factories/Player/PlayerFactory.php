@@ -30,7 +30,7 @@ class PlayerFactory extends Factory
      */
     public function definition()
     {
-        $season = Season::getCurrent();
+        $season = Season::currentSeason();
 
         return [
             'handedness'        => mt_rand(0, 1) ? Handedness::Left : Handedness::Right,

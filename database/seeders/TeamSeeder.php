@@ -23,14 +23,16 @@ class TeamSeeder extends Seeder
                 $city = City::inRandomOrder()->first();
                 $division = $i < 15 ? 'Red' : 'Blue';
                 $sub_division = $sub_divisions[floor(($i % 15) / 5)];
-                Team::insert([
+                $attributes = [
                     'league_id'     => $league->id,
                     'division'      => $division,
                     'sub_division'  => $sub_division,
                     'name'          => TeamName::randomName(),
                     'city'          => $city->name,
                     'state'         => $city->state
-                ]);
+                ];
+                $team = new Team($attributes);
+                $team->save();
             }
         }
     }

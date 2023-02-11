@@ -72,3 +72,16 @@ Route::get('/stats', function(){
    arsort($wpa);
    print_r($wpa);
 });
+
+Route::get('/blah', function(){
+    $rows = \Illuminate\Support\Facades\DB::connection('tor_old')
+        ->select('SELECT * FROM tor_wbl_events_human4_p1s19');
+    $codes = array_column($rows, 'code');
+    $codes = array_unique($codes);
+    print_r($codes);
+});
+
+Route::get('/sim', function(){
+    $sim = new App\Sim\Sim();
+    $sim->run();
+});

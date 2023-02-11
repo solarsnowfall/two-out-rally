@@ -72,6 +72,11 @@ use Parental\HasParent;
  * @property-read \App\Models\Team\TeamPlayer|null $teamPosition
  * @property string $type
  * @method static \Illuminate\Database\Eloquent\Builder|Pitcher whereType($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Stats\DefensiveStat[] $defensiveStats
+ * @property-read int|null $defensive_stats_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|PitchingStat[] $pitchingStats
+ * @property-read int|null $pitching_stats_count
+ * @property-read \App\Models\Team\TeamPlayer $teamPlayer
  */
 class Pitcher extends Player
 {

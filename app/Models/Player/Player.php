@@ -76,6 +76,9 @@ use Parental\HasChildren;
  * @property-read TeamPlayer|null $teamPosition
  * @property string $type
  * @method static \Illuminate\Database\Eloquent\Builder|Player whereType($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|DefensiveStat[] $defensiveStats
+ * @property-read int|null $defensive_stats_count
+ * @property-read TeamPlayer $teamPlayer
  */
 class Player extends Model
 {

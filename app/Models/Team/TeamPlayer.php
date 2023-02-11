@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder|TeamPlayer whereId($value)
  * @property-read \App\Models\Team\RosterPosition|null $position
+ * @property int $active
+ * @method static \Illuminate\Database\Eloquent\Builder|TeamPlayer whereActive($value)
  */
 class TeamPlayer extends Model
 {
