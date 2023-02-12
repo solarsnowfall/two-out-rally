@@ -16,20 +16,22 @@ return new class extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('series_id')->index();
-            $table->unsignedBigInteger('away_team_id')->index();
-            $table->unsignedBigInteger('home_team_id')->index();
+            $table->unsignedBigInteger('away_id')->index();
+            $table->unsignedBigInteger('home_id')->index();
+            $table->unsignedBigInteger('winner_id')->index();
 
-            $table->unsignedTinyInteger('ra')->default(0);
-            $table->unsignedTinyInteger('rh')->default(0);
-            $table->unsignedTinyInteger('ha')->default(0);
-            $table->unsignedTinyInteger('hh')->default(0);
-            $table->unsignedTinyInteger('ea')->default(0);
-            $table->unsignedTinyInteger('eh')->default(0);
+            $table->unsignedTinyInteger('r_away')->default(0);
+            $table->unsignedTinyInteger('r_home')->default(0);
+            $table->unsignedTinyInteger('h_away')->default(0);
+            $table->unsignedTinyInteger('h_home')->default(0);
+            $table->unsignedTinyInteger('e_away')->default(0);
+            $table->unsignedTinyInteger('e_home')->default(0);
             $table->json('inning_runs');
 
             $table->foreign('series_id')->references('id')->on('series');
-            $table->foreign('away_team_id')->references('id')->on('teams');
-            $table->foreign('home_team_id')->references('id')->on('teams');
+            $table->foreign('away_id')->references('id')->on('teams');
+            $table->foreign('home_id')->references('id')->on('teams');
+            $table->foreign('winner_id')->references('id')->on('teams');
 
             $table->timestamp('created_at')
                 ->index()

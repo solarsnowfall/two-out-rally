@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Team\Team;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Matchup
@@ -29,18 +30,37 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Matchup whereAwayId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Matchup whereHomeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Matchup whereLeagueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Matchup forDay()
+ * @method static Builder|Matchup forLeague(\App\Models\League $league)
+ * @method static Builder|Matchup onDay(int $day)
  */
 class Matchup extends Model
 {
     use HasFactory;
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne|Team
+     */
     public function awayTeam()
     {
         return $this->hasOne(Team::class, 'id', 'away_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne|Team
+     */
     public function homeTeam()
     {
         return $this->hasOne(Team::class, 'id', 'home_id');
+    }
+
+    public function scopeForLeague(Builder $query, League $league)
+    {
+        return $query->where('league_id', $league->id);
+    }
+
+    public function scopeOnDay(Builder $query, int $day)
+    {
+        return $query->where('day', $day);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Sim;
 
+use App\Models\Matchup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,23 +23,62 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Series whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Series whereSeasonId($value)
  * @mixin \Eloquent
+ * @property-read Matchup|null $matchup
+ * @property int $matchup_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Series whereMatchupId($value)
  */
 class Series extends Model
 {
     use HasFactory;
+
+    protected $table = 'series';
 
     public function games()
     {
         return $this->hasMany(Game::class);
     }
 
-    public function playGames()
+    public function matchup()
     {
-
+        return $this->hasOne(Matchup::class);
     }
 
     public function numGames()
     {
         return $this->day < 34;
+    }
+
+    public function winsAway()
+    {
+        if (empty($this->games)) {
+            return 0;
+        }
+
+        $wins = 0;
+
+        foreach ($this->games as $game) {
+            if ($game->away_id === $game->winner_id) {
+                $wins++;
+            }
+        }
+
+        return $wins;
+    }
+
+    public function winsHome()
+    {
+        if (empty($this->games)) {
+            return 0;
+        }
+
+        $wins = 0;
+
+        foreach ($this->games as $game) {
+            if ($game->home_id === $game->winner_id) {
+                $wins++;
+            }
+        }
+
+        return $wins;
     }
 }

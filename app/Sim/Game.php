@@ -4,11 +4,12 @@ namespace App\Sim;
 
 use App\Models\Matchup;
 use App\Models\Sim\Game as GameModel;
+use App\Models\Sim\Series as SeriesModel;
 use App\Models\Team\Team;
 
 class Game
 {
-    protected Series $series;
+    protected SeriesModel $series;
 
     protected Team $away;
 
@@ -24,20 +25,53 @@ class Game
 
     protected int $outs = 0;
 
-    public function __construct(Series $series)
+    protected int $side = 0;
+
+    public function __construct(SeriesModel $series, GameModel $game)
     {
-        $this->away = $away;
-        $this->home = $home;
+        $this->series = $series;
+        $this->game = $game;
+        $this->game->away_id = $this->series->matchup->away_id;
+        $this->game->home_id = $this->series->matchup->home_id;
+        $this->away = $this->series->matchup->awayTeam();
+        $this->home = $this->series->matchup->homeTeam();
     }
 
     public function run()
     {
-        $this->game = new GameModel([
-            'series_id' => $this->
-        ]);
+        while (!$this->gameComplete()) {
 
+            while (!$this->inningComplete()) {
+
+                while (!$this->sideComplete()) {
+
+
+
+
+                }
+
+                $this->side++;
+            }
+
+            $this->inning++;
+        }
 
 
         $this->game->save();
+    }
+
+    protected function gameComplete()
+    {
+        return $this->inning <= 9;
+    }
+
+    protected function inningComplete()
+    {
+        return $this->side === 1 && $this->sideComplete();
+    }
+
+    protected function sideComplete()
+    {
+        return $this->outs === 3;
     }
 }

@@ -51,6 +51,11 @@ class League extends Model
         return $this->hasmany(Team::class);
     }
 
+    public function matchups()
+    {
+        return $this->hasMany(Matchup::class);
+    }
+
     /**
      * @return int
      */
@@ -67,11 +72,6 @@ class League extends Model
     public function averagePlayerLevel(): int
     {
         return floor(($this->minPlayerLevel() + $this->maxPlayerLevel()) / 2);
-    }
-
-    public function matchups()
-    {
-        return $this->hasMany(Matchup::class);
     }
 
     public function maxPlayerLevel(): int

@@ -13,17 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('series', function (Blueprint $table) {
+        Schema::create('lineups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('season_id')->index();
-            $table->unsignedTinyInteger('day')->index();
+            $table->unsignedBigInteger('team_id')->index();
+            $table->unsignedTinyInteger('game')->index();
+            $table->json('roster_position_order');
 
             $table->timestamp('created_at')
                 ->index()
                 ->nullable()
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
 
-            $table->foreign('season_id')->references('id')->on('seasons');
+            $table->timestamp('updated_at')
+                ->index()
+                ->nullable()
+                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
         });
     }
 
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('series');
+        Schema::dropIfExists('lineups');
     }
 };

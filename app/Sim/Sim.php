@@ -21,11 +21,16 @@ class Sim
         /** @var League $matchup */
         foreach (League::all() as $league) {
             /** @var Matchup $matchup */
-            foreach ($league->matchups->where('day', '=', $this->season->dayOffset()) as $matchup) {
+            foreach (Matchup::forLeague($league)->onDay($this->season->day)->get() as $matchup) {
                 $series = new Series();
                 $series->day = $this->season->day;
-
+                $series->matchup_id = $matchup->id;
             }
         }
+    }
+
+    public function currentMatchups()
+    {
+
     }
 }
