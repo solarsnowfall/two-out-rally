@@ -5,11 +5,15 @@ namespace App\Sim;
 use App\Models\League;
 use App\Models\Matchup;
 use App\Models\Season;
-use App\Models\Sim\Series;
+use App\Models\Sim\Series as SeriesModel;
+use Illuminate\Support\Facades\DB;
 
 class Sim
 {
     protected Season $season;
+    protected array $series = [];
+
+    protected int $series_num = 0;
 
     public function __construct()
     {
@@ -21,10 +25,10 @@ class Sim
         /** @var League $matchup */
         foreach (League::all() as $league) {
             /** @var Matchup $matchup */
-            foreach (Matchup::forLeague($league)->onDay($this->season->day)->get() as $matchup) {
-                $series = new Series();
-                $series->day = $this->season->day;
-                $series->matchup_id = $matchup->id;
+            foreach (Matchup::forLeague($league)->onDay($this->season->dayOffset())->get() as $matchup) {
+                $this->series[$this->series_num] = new Series($this->season, new SeriesModel(), $matchup);
+                $this->series[$this->series_num]->run();
+                $this->series_num++;
             }
         }
     }

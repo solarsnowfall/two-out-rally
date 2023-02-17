@@ -1,5 +1,7 @@
 <?php
 
+use App\Modules\PitcherFocus;
+use App\Modules\Handedness;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,19 +17,22 @@ return new class extends Migration
     {
         Schema::create('lineups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('team_id')->index();
-            $table->unsignedTinyInteger('game')->index();
-            $table->json('roster_position_order');
+            $table->unsignedBigInteger('team_id');
 
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->enum('focus', [
+                PitcherFocus::Balanced->value,
+                PitcherFocus::Control->value,
+                PitcherFocus::Movement->value,
+                PitcherFocus::Velocity->value
+            ])->nullable();
 
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->enum('handedness', [
+                Handedness::Left->value,
+                Handedness::Right->value
+            ])->nullable();
+
+            $table->unique(['team_id', 'focus', 'handedness']);
+            $table->foreign('team_id')->references('id')->on('teams');
         });
     }
 

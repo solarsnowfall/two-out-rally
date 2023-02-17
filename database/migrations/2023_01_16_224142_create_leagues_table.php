@@ -18,16 +18,7 @@ return new class extends Migration
             $table->enum('type', ['Casual', 'Open', 'WBL'])->index();
             $table->enum('controlled', ['CPU', 'Human'])->index();
             $table->enum('level', [1, 2, 3, 4, 5])->index();
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
         });
     }
 

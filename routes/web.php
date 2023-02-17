@@ -32,28 +32,6 @@ Route::get('/', function(){
     }
 });
 
-Route::get('/play', function(){
-
-    $away = \App\Models\Team\Team::find(2);
-    $home = \App\Models\Team\Team::find(1);
-
-    $lineup = new \App\Modules\Lineup($away);
-    $pitcher = $home->pitchers()->first();
-    $outs = 0;
-
-    for ($i=0; $i<10&&$outs<3; $i++) {
-        $batter = $lineup->next();
-        $atBat = new \App\Modules\AtBat($batter, $pitcher);
-        $outcome = $atBat->outcome();
-
-        if ($outcome === \App\Modules\AtBatOutcome::Strikeout) {
-            $outs++;
-        }
-
-        echo $outcome->value . "<br />";
-    }
-});
-
 Route::get('/stats', function(){
    $keys = explode(', ', file_get_contents(__DIR__ .'/../database/seeders/src/old_stat_keys.txt'));
    $content = file_get_contents(__DIR__ .  '/../database/seeders/src/old_stat_values.txt');

@@ -36,9 +36,10 @@ class DatabaseSeeder extends Seeder
             SeasonSeeder::class,
             PlayerSeeder::class,
             PlayerSkillSeeder::class,
-            TeamDefaultLineupSeeder::class,
             StatSeeder::class,
-            MatchupSeeder::class
+            MatchupSeeder::class,
+            LineupSeeder::class,
+            RotationSeeder::class
         ]);
     }
 }

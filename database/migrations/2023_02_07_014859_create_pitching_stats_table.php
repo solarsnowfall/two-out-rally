@@ -45,16 +45,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('pk')->default(0);
             $table->unsignedMediumInteger('pt')->default(0);
             $table->unsignedTinyInteger('sfa')->default(0);
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
             $table->foreign('team_id')->references('id')->on('teams');

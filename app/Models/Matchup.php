@@ -43,7 +43,7 @@ class Matchup extends Model
      */
     public function awayTeam()
     {
-        return $this->hasOne(Team::class, 'id', 'away_id');
+        return $this->hasOne(Team::class, 'id', 'away_id')->first();
     }
 
     /**
@@ -51,7 +51,7 @@ class Matchup extends Model
      */
     public function homeTeam()
     {
-        return $this->hasOne(Team::class, 'id', 'home_id');
+        return $this->hasOne(Team::class, 'id', 'home_id')->first();
     }
 
     public function scopeForLeague(Builder $query, League $league)

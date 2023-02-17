@@ -4,10 +4,14 @@ namespace App\Models\Team;
 
 use App\Models\League;
 use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
 use App\Models\Player\Player;
 use App\Models\Player\Position;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+use SebastianBergmann\Diff\Line;
 
 /**
  * App\Models\Team\Team
@@ -47,6 +51,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $players_count
  * @property array|null $default_lineup
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereDefaultLineup($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\Lineup[] $lineups
+ * @property-read int|null $lineups_count
+ * @property-read \App\Models\Team\Rotation|null $rotation
  */
 class Team extends Model
 {
@@ -55,6 +62,13 @@ class Team extends Model
     protected $casts = [
         'default_lineup' => 'array'
     ];
+
+    private Lineup $lineup;
+
+    public function getLineup(): Lineup
+    {
+        return $this->lineup;
+    }
 
     public function league()
     {
@@ -75,16 +89,51 @@ class Team extends Model
 
     public function batters()
     {
-        return $this->players()->where('players.position_id', '>', Position::PITCHER);
+       return $this->players->where('type', 'like', Batter::class);
     }
 
     public function pitchers()
     {
-        return $this->players()->where('players.position_id', '=', Position::PITCHER);
+        return $this->players->where('type', 'like', Pitcher::class);
     }
 
-    public function getDefaultLineup(): array
+    public function rotation()
     {
-        return json_decode($this->default_lineup, true);
+        return $this->hasOne(Rotation::class);
+    }
+
+    public function lineups()
+    {
+        return $this->hasMany(Lineup::class);
+    }
+
+    public function setLineupForPitcher(Pitcher $pitcher)
+    {
+        $this->lineup = $this->lineupForPitcher($pitcher);
+    }
+
+    public function lineupForPitcher(Pitcher $pitcher)
+    {
+        if (count($this->lineups) === 1) {
+            return $this->lineups->first();
+        }
+
+        return $this->lineups->where('handedness', '=', $pitcher->handedness)
+            ->where('focus', '=', $pitcher->skill->focus())
+            ->get();
+
+    }
+
+    public function startingPitcher(int $game_num)
+    {
+        $game_num %= 4;
+        return $this->rotation->pitcherInRotation(
+            RosterPosition::STARTING_PITCHER1 + $game_num
+        );
+    }
+
+    public function playerForPosition(RosterPosition|int $position)
+    {
+        return TeamPlayer::forTeam($this)->withPosition($position)->first()->player;
     }
 }

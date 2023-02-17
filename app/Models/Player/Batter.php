@@ -76,6 +76,7 @@ use Parental\HasParent;
  * @property-read \Illuminate\Database\Eloquent\Collection|DefensiveStat[] $offensiveStats
  * @property-read int|null $offensive_stats_count
  * @property-read \App\Models\Team\TeamPlayer|null $teamPlayer
+ * @property-read \App\Models\Player\Position $position
  */
 class Batter extends Player
 {

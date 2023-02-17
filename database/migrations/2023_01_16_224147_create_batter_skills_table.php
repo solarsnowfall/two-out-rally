@@ -33,16 +33,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('grace')->default(0);
             $table->unsignedTinyInteger('ground_ball')->default(0);
             $table->unsignedTinyInteger('accuracy')->default(0);
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
         });

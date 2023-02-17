@@ -20,16 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('abbrv');
             $table->string('description')->nullable();
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
         });
     }
 

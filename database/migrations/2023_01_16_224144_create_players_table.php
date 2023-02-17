@@ -42,16 +42,7 @@ return new class extends Migration
             $table->string('hometown', 50);
             $table->unsignedTinyInteger('birth_day');
             $table->unsignedMediumInteger('birth_season');
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('position_id')->references('id')->on('positions');

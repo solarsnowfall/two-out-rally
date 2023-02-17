@@ -3,6 +3,7 @@
 namespace App\Models\Player;
 
 use App\Modules\BlendsSkills;
+use App\Modules\PitcherFocus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -109,5 +110,33 @@ class PitcherSkill extends Model
     public function strikeout(): int
     {
         return $this->blend($this->power, $this->explosiveness, $this->vertical_break);
+    }
+
+    public function control()
+    {
+        return $this->stamina + $this->mechanics + $this->paint_corner + $this->induce_grounder;
+    }
+
+    public function movement()
+    {
+        return $this->vertical_break + $this->release + $this->horizontal_break + $this->induce_popup;
+    }
+
+    public function velocity()
+    {
+        return $this->power + $this->delivery + $this->explosiveness + $this->pickoff;
+    }
+
+    public function focus(): PitcherFocus
+    {
+        if ($this->control() > $this->movement() && $this->control() > $this->velocity()) {
+            return PitcherFocus::Control;
+        } elseif ($this->movement() > $this->control() && $this->movement() > $this->velocity()) {
+            return PitcherFocus::Movement;
+        } elseif ($this->velocity() > $this->control() && $this->velocity() > $this->movement()) {
+            return PitcherFocus::Velocity;
+        }
+
+        return PitcherFocus::Balanced;
     }
 }

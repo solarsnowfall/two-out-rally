@@ -77,6 +77,7 @@ use Parental\HasParent;
  * @property-read \Illuminate\Database\Eloquent\Collection|PitchingStat[] $pitchingStats
  * @property-read int|null $pitching_stats_count
  * @property-read \App\Models\Team\TeamPlayer $teamPlayer
+ * @property-read \App\Models\Player\Position $position
  */
 class Pitcher extends Player
 {
@@ -85,6 +86,7 @@ class Pitcher extends Player
     protected $table = 'players';
 
     private int $pitches = 0;
+
 
     public function skill()
     {

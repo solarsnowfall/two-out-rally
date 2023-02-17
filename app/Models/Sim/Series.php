@@ -5,6 +5,7 @@ namespace App\Models\Sim;
 use App\Models\Matchup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Sim\Series
@@ -32,6 +33,7 @@ class Series extends Model
     use HasFactory;
 
     protected $table = 'series';
+    public $timestamps = false;
 
     public function games()
     {
@@ -40,7 +42,7 @@ class Series extends Model
 
     public function matchup()
     {
-        return $this->hasOne(Matchup::class);
+        return $this->belongsTo(Matchup::class);
     }
 
     public function numGames()

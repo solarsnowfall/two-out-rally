@@ -79,6 +79,7 @@ use Parental\HasChildren;
  * @property-read \Illuminate\Database\Eloquent\Collection|DefensiveStat[] $defensiveStats
  * @property-read int|null $defensive_stats_count
  * @property-read TeamPlayer $teamPlayer
+ * @property-read \App\Models\Player\Position $position
  */
 class Player extends Model
 {
@@ -125,6 +126,11 @@ class Player extends Model
     public function defensiveStats()
     {
         return $this->hasMany(DefensiveStat::class);
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
     }
 
     public function rosterPosition()

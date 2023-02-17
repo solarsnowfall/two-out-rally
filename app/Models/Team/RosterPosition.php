@@ -7,6 +7,7 @@ use App\Models\Player\Pitcher;
 use App\Models\Player\Position;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Team\RosterPosition
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|RosterPosition whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RosterPosition wherePositionId($value)
  * @mixin \Eloquent
+ * @method static Builder|RosterPosition forBatters()
+ * @method static Builder|RosterPosition forPitchers()
  */
 class RosterPosition extends Model
 {
@@ -54,6 +57,7 @@ class RosterPosition extends Model
     const DESIGNATED_HITTER = 23;
     const BACKUP_INFIELDER = 24;
     const BACKUP_OUTFIELDER = 25;
+    const BACKUP_INFIELDER2 = 26;
 
     use HasFactory;
 
@@ -81,5 +85,15 @@ class RosterPosition extends Model
     public function getPlayerModel(): string
     {
         return $this->position->id == Position::PITCHER ? Pitcher::class : Batter::class;
+    }
+
+    public function scopeForBatters(Builder $query)
+    {
+        return $query->where('id', '>=', RosterPosition::CATCHER);
+    }
+
+    public function scopeForPitchers(Builder $query)
+    {
+        return $query->where('id', '<=', RosterPosition::CLOSING_PITCHER);
     }
 }

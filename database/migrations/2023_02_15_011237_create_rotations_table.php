@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use \Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -14,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('seasons', function (Blueprint $table) {
-
+        Schema::create('rotations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('day')->default(0);
-            $table->json('day_order');
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('completed_at')->nullable();
+            $table->unsignedBigInteger('team_id');
+            $table->timestamps();
+
+            $table->foreign('team_id')->references('id')->on('teams');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seasons');
+        Schema::dropIfExists('rotations');
     }
 };

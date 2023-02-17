@@ -2,6 +2,7 @@
 
 namespace App\Models\Player;
 
+use App\Modules\BatterFocus;
 use App\Modules\Chance;
 use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -165,5 +166,33 @@ class BatterSkill extends Model
     public function walk(): int
     {
         return $this->blend($this->discipline, $this->lower_body);
+    }
+
+    public function vision()
+    {
+        return $this->line_drive + $this->reaction + $this->discipline + $this->bat_control;
+    }
+
+    public function muscle()
+    {
+        return $this->fly_ball + $this->lower_body + $this->pull + $this->arm_strength;
+    }
+
+    public function athleticism()
+    {
+        return $this->speed + $this->grace + $this->ground_ball + $this->accuracy;
+    }
+
+    public function focus(): BatterFocus
+    {
+        if ($this->vision() > $this->muscle() && $this->vision() > $this->athleticism()) {
+            return BatterFocus::Vision;
+        } elseif ($this->muscle() > $this->vision() && $this->muscle() > $this->athleticism()) {
+            return BatterFocus::Muscle;
+        } elseif ($this->athleticism() > $this->vision() && $this->athleticism() > $this->muscle()) {
+            return BatterFocus::Athleticism;
+        }
+
+        return BatterFocus::Balanced;
     }
 }

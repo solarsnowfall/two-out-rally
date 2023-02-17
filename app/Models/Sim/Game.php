@@ -41,10 +41,37 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereSeriesId($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereWinnerId($value)
+ * @property int $away_team_id
+ * @property int $home_team_id
+ * @property int $ra
+ * @property int $rh
+ * @property int $ha
+ * @property int $hh
+ * @property int $ea
+ * @property int $eh
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereAwayTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereEa($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereEh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereHa($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereHh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereHomeTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereRa($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereRh($value)
  */
 class Game extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function(Model $model) {
+            $model->created_at = $model->freshTimestamp();
+        });
+    }
 
     public function events()
     {

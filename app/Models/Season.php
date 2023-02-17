@@ -30,9 +30,20 @@ class Season extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $casts = [
         'day_order' => 'json'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_at = $model->freshTimestamp();
+        });
+    }
 
     public static function currentSeason(): Season
     {

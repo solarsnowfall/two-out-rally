@@ -25,20 +25,10 @@ return new class extends Migration
 
             $table->string('city', 50);
             $table->string('state', 2);
-            $table->json('default_lineup')->nullable();
+            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('league_id')->references('id')->on('leagues');
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
         });
     }
 

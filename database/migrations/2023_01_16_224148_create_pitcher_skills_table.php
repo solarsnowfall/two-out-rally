@@ -32,16 +32,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('delivery')->default(0);
             $table->unsignedTinyInteger('explosiveness')->default(0);
             $table->unsignedTinyInteger('pickoff')->default(0);
-
-            $table->timestamp('created_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
-
-            $table->timestamp('updated_at')
-                ->index()
-                ->nullable()
-                ->default(DB::raw('NULL on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
         });

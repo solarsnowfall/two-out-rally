@@ -3,6 +3,8 @@
 namespace App\Modules;
 
 use App\Models\Player\Batter;
+use App\Models\Player\Position;
+use App\Models\Team\RosterPosition;
 use App\Models\Team\Team;
 
 class LineupGenerator
@@ -15,12 +17,12 @@ class LineupGenerator
     public function __construct(Team $team)
     {
         $this->team = $team;
-        $this->batters = $team->batters;
+        $this->batters = $team->batters();
     }
 
     public function generate(): array
     {
-        $ids = $hit = $onb = $hmr = $all = $lineup = [];
+        $ids = $batters = $hit = $onb = $hmr = $all = $lineup = [];
 
         /**
          * @var int $key
@@ -28,7 +30,21 @@ class LineupGenerator
          */
         foreach ($this->batters as $key => $batter) {
 
-            $ids[$key] = $batter->rosterPosition->id;
+            $skip = match($batter->rosterPosition->id) {
+                RosterPosition::BACKUP_CATCHER,
+                RosterPosition::BACKUP_INFIELDER,
+                RosterPosition::BACKUP_OUTFIELDER,
+                RosterPosition::BACKUP_INFIELDER2 => true,
+                default => false
+            };
+
+            if ($skip) {
+                continue;
+            }
+
+            $ids[$key] = $batter->id;
+
+            $batters[$key] = $batter;
 
             $hit[$key] = $batter->skill->liner()
                 + $batter->skill->fly_ball
@@ -46,21 +62,22 @@ class LineupGenerator
             $all[$key] = $hit[$key] + $onb[$key] + $hmr[$key];
         }
 
-        array_multisort($hit, SORT_DESC, $ids, $onb, $hmr, $all);
-        $lineup[2] = $ids[0];
+        array_multisort($hit, SORT_DESC, $ids, $batters, $onb, $hmr, $all);
+        $lineup[2] = $batters[0];
 
-        unset($ids[0], $onb[0], $hmr[0], $hit[0], $all[0]);
-        array_multisort($onb, SORT_DESC, $ids, $hit, $hmr, $all);
-        $lineup[0] = $ids[0];
-        $lineup[3] = $ids[1];
+        unset($ids[0], $batters[0], $onb[0], $hmr[0], $hit[0], $all[0]);
+        array_multisort($onb, SORT_DESC, $ids, $batters, $hit, $hmr, $all);
+        $lineup[0] = $batters[0];
+        $lineup[3] = $batters[1];
 
-        unset($ids[0], $ids[1], $onb[0], $onb[1], $hmr[0], $hmr[1], $hit[0], $hit[1], $all[0], $all[1]);
-        array_multisort($all, SORT_DESC, $ids);
+        unset($ids[0], $ids[1], $batters[0], $batters[1], $onb[0], $onb[1], $hmr[0], $hmr[1], $hit[0], $hit[1], $all[0], $all[1]);
+        array_multisort($all, SORT_DESC, $ids, $batters);
 
-        foreach (array_keys($all) as $key) {
-            if (!isset($lineup[$key])) {
-                $lineup[$key] = $ids[$key];
-            }
+        $slots = [1, 4, 5, 6, 7, 8, 9];
+        $slot = 0;
+        while (count($batters)) {
+            $lineup[$slots[$slot]] = array_shift($batters);
+            $slot++;
         }
 
         ksort($lineup);
