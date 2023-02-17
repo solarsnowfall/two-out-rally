@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use App\Models\Player\Batter;
-use App\Models\Player\BatterSkill;
 use App\Models\Player\Pitcher;
-use App\Models\Player\PitcherSkill;
 use App\Models\Player\Player;
-use App\Models\Player\Skill;
+use App\Models\Player\Skill\BatterSkill;
+use App\Models\Player\Skill\PitcherSkill;
+use App\Models\Player\Skill\Skill;
 use App\Models\Team\Team;
 use App\Modules\Chance;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -101,7 +100,7 @@ class League extends Model
     {
         if ($this->averageBatterSkills === null) {
             $columns = array_map(function($skill){
-                return $skill->label;
+                return $skill->attribute;
             }, Skill::skillsFor(Batter::class));
 
             $skills = BatterSkill::select($columns)
@@ -120,7 +119,7 @@ class League extends Model
     {
         if ($this->averagePitcherSkills === null) {
             $columns = array_map(function($skill){
-                return $skill->label;
+                return $skill->attribute;
             }, Skill::skillsFor(Pitcher::class));
 
             $skills = PitcherSkill::select($columns)

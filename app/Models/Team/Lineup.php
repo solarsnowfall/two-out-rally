@@ -2,6 +2,8 @@
 
 namespace App\Models\Team;
 
+use App\Models\Player\Batter;
+use App\Modules\AveragePlayerSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,11 +25,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Lineup whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Lineup whereTeamId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\LineupBatter[] $lineupBatters
+ * @property-read int|null $lineup_batters_count
  */
 class Lineup extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $batters;
     protected int $position = 1;
 
     public function team()
@@ -35,9 +42,22 @@ class Lineup extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function lineupPlayers()
+    public function batters()
     {
-        return $this->hasMany(LineupBatter::class);
+        if ($this->batters) {
+            return $this->batters;
+        }
+
+        foreach ($this->lineupBatters as $lineupPlayer) {
+            $this->batters[] = $lineupPlayer->batter;
+        }
+
+        return $this->batters;
+    }
+
+    public function lineupBatters()
+    {
+       return $this->hasMany(LineupBatter::class);
     }
 
     public function nextBatter()
@@ -46,7 +66,17 @@ class Lineup extends Model
         $this->position++;
         $this->position %= 9;
 
-        return $batter->batter;
+        return $batter;
+    }
+
+    public function normalize()
+    {
+        $average = new AveragePlayerSkills($this->team->league, Batter::class);
+
+        /** @var Batter $batter */
+        foreach ($this->batters() as $batter) {
+            $batter->skill->normalize($average->skill);
+        }
     }
 
     public function reset()

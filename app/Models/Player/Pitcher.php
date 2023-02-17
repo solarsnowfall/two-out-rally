@@ -3,6 +3,7 @@
 namespace App\Models\Player;
 
 
+use App\Models\Player\Skill\PitcherSkill;
 use App\Models\Stats\PitchingStat;
 use Parental\HasParent;
 
@@ -33,7 +34,7 @@ use Parental\HasParent;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Team\RosterPosition|null $rosterPosition
- * @property-read \App\Models\Player\PitcherSkill|null $skill
+ * @property-read \App\Models\Player\Skill\PitcherSkill|null $skill
  * @property-read \App\Models\Team\Team|null $team
  * @method static \Illuminate\Database\Eloquent\Builder|Pitcher newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Pitcher newQuery()

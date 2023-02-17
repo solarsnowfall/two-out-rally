@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('skills', function (Blueprint $table) {
             $table->tinyIncrements('id');
-            $table->boolean('is_pitcher');
-            $table->string('label', 50)->index();
+            $table->string('type')->index();
+            $table->string('attribute', 50)->index();
             $table->string('name', 50);
-            $table->enum('attribute', ['Control', 'Movement', 'Velocity', 'Vision', 'Muscle', 'Athleticism']);
+            $table->enum('focus', ['Control', 'Movement', 'Velocity', 'Vision', 'Muscle', 'Athleticism']);
             $table->text('description');
         });
     }

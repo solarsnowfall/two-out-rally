@@ -25,12 +25,13 @@ class LineupSeeder extends Seeder
             /** @var Team $team */
             foreach ($league->teams as $team) {
                 $generator = new LineupGenerator($team);
-                /** @var Batter[] $lineup */
-                $lineup = $generator->generate();
-                $id = Lineup::insert(['team_id' => $team->id]);
-                foreach ($lineup as $k => $batter) {
+                /** @var Batter[] $batters */
+                $batters = $generator->generate();
+                $lineup = new Lineup(['team_id' => $team->id]);
+                $lineup->save();
+                foreach ($batters as $k => $batter) {
                     LineupBatter::insert([
-                        'lineup_id' => $id,
+                        'lineup_id' => $lineup->id,
                         'player_id' => $batter->id,
                         'roster_position_id' => $batter->rosterPosition->id,
                         'batting_order' => $k + 1

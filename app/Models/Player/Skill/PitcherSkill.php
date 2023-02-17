@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Player;
+namespace App\Models\Player\Skill;
 
-use App\Modules\BlendsSkills;
+use App\Models\Player\Pitcher;
 use App\Modules\PitcherFocus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \App\Models\Player\Pitcher $player
  */
-class PitcherSkill extends Model
+class PitcherSkill extends Model implements PlayerSkill
 {
     use HasFactory;
     use BlendsSkills;

@@ -4,9 +4,10 @@ namespace App\Modules;
 
 use App\Models\League;
 use App\Models\Player\Batter;
-use App\Models\Player\BatterSkill;
-use Illuminate\Database\Eloquent\Concerns\HasAttributes;
-use Illuminate\Support\Facades\DB;
+use App\Models\Player\Skill\BatterSkill;
+use App\Models\Player\Skill\PlayerSkill;
+use App\Models\Player\Skill\Skill;
+use Illuminate\Support\Facades\Cache;
 
 class AverageBatterSkills
 {
@@ -26,37 +27,32 @@ class AverageBatterSkills
     public function __construct(League $league)
     {
         $this->league = $league;
-        $this->skill = $this->fetchAverages();
+        $this->skill = $this->generateAverageSkills();
     }
 
-    public function __get($name)
+    public function generateAverageSkills(): PlayerSkill
     {
-        return $this->getAttribute($name);
+        $key =  implode('_', [
+            $this->league->id,
+            strtolower(Batter::class),
+            'average',
+            'skills'
+        ]);
+
+        $attributes = Cache::get($key, false);
+
+        if ($attributes === false) {
+            $attributes = $this->fetchAveragedAttributes();
+        }
+
+        Cache::set($key, $attributes, 60*60);
+
+        return new BatterSkill($attributes);
     }
 
-    public function __set($name, $value)
+    public function fetchAveragedAttributes(): array
     {
-        return $this->setAttribute($name, $value);
-    }
-
-    public function fetchAverages(): BatterSkill
-    {
-        DB::connection()->enableQueryLog();
-
-        $columns = [
-            'line_drive',
-            'reaction',
-            'discipline',
-            'bat_control',
-            'fly_ball',
-            'lower_body',
-            'pull',
-            'arm_strength',
-            'speed',
-            'grace',
-            'ground_ball',
-            'accuracy'
-        ];
+        $columns = Skill::skillsFor(Batter::class);
 
         $skills = BatterSkill::select($columns)
             ->leftJoin('team_players', 'batter_skills.id', '=', 'team_players.player_id')
@@ -79,6 +75,11 @@ class AverageBatterSkills
             $attributes[$column] = round($value / count($skills), 2);
         }
 
-        return new BatterSkill($attributes);
+        return $attributes;
+    }
+
+    private function checkCache()
+    {
+
     }
 }

@@ -6,7 +6,6 @@ use App\Models\Stats\DefensiveStat;
 use App\Models\Team\RosterPosition;
 use App\Models\Team\Team;
 use App\Models\Team\TeamPlayer;
-use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Parental\HasChildren;

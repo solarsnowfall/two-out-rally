@@ -19,17 +19,7 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::get('/', function(){
-    echo '<p>Raw</p>';
-    $batter = Batter::find(14);
-    $average = new \App\Modules\AverageBatterSkills($batter->team->league);
-    foreach (\App\Models\Player\Skill::skillsFor(Batter::class) as $skill) {
-        echo $skill->label . ': ' . $batter->skill->{$skill->label} . "<br />";
-    }
-    echo '<p>Normalized</p>';
-    $batter->normalize($average->fetchAverages());
-    foreach (\App\Models\Player\Skill::skillsFor(Batter::class) as $skill) {
-        echo $skill->name . ': ' . $batter->skill->{$skill->label} . "<br />";
-    }
+
 });
 
 Route::get('/stats', function(){
@@ -62,4 +52,19 @@ Route::get('/blah', function(){
 Route::get('/sim', function(){
     $sim = new App\Sim\Sim();
     $sim->run();
+});
+
+Route::get('/lineup/{id}', function(int $id){
+    $l = \App\Models\Team\Lineup::find($id);
+    $l->normalize();
+    echo '<table>';
+    /** @var Batter $batter */
+    foreach ($l->batters() as $batter) {
+        echo "<tr><td>$batter->id</td><td>$batter->name</td></tr>";
+        foreach (\App\Models\Player\Skill\Skill::skillsFor(Batter::class) as $skill) {
+            $value = $batter->skill->{$skill->attribute};
+            echo "<tr><td>$skill->name</td><td>$value</td></tr>";
+        }
+    }
+    echo '</table>';
 });

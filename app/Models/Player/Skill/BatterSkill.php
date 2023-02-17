@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Models\Player;
+namespace App\Models\Player\Skill;
 
+use App\Models\Player\Batter;
 use App\Modules\BatterFocus;
-use App\Modules\Chance;
-use App\Modules\BlendsSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use \Illuminate\Support\Carbon;
 
 /**
- * App\Models\Player\BatterSkill
+ * App\Models\Player\Skill\BatterSkill
  *
  * @property int $id
  * @property int $player_id
@@ -27,8 +26,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $grace
  * @property int $ground_ball
  * @property int $accuracy
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Batter $player
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill query()
@@ -50,12 +50,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereStealing($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Models\Player\Batter $player
  */
-class BatterSkill extends Model
+class BatterSkill extends Model implements PlayerSkill
 {
     use HasFactory;
     use BlendsSkills;
+    use DescribesSkill;
 
     protected $fillable = [
         'player_id',

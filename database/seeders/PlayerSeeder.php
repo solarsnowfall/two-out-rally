@@ -2,24 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\League;
 use App\Models\Player\Batter;
-use App\Models\Player\BatterSkill;
 use App\Models\Player\Pitcher;
-use App\Models\Player\PitcherSkill;
 use App\Models\Player\Player;
-use App\Models\Player\PlayerBackground;
-use App\Models\Player\PlayerPersonality;
-use App\Models\Player\Position;
-use App\Models\Season;
-use App\Models\Stats\DefensiveStat;
-use App\Models\Stats\OffensiveStat;
-use App\Models\Stats\PitchingStat;
 use App\Models\Team\RosterPosition;
 use App\Models\Team\Team;
 use App\Models\Team\TeamPlayer;
-use App\Modules\LineupGenerator;
-use App\Modules\PitcherFocus;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

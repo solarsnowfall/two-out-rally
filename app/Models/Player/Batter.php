@@ -2,6 +2,7 @@
 
 namespace App\Models\Player;
 
+use App\Models\Player\Skill\BatterSkill;
 use App\Models\Stats\DefensiveStat;
 use Parental\HasParent;
 

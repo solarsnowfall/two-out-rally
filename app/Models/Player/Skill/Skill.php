@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Models\Player;
+namespace App\Models\Player\Skill;
 
+use App\Models\Player\Batter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,10 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Player\Skill
  *
  * @property int $id
- * @property int $is_pitcher
- * @property string $label
- * @property string $name
+ * @property string $type
  * @property string $attribute
+ * @property string $name
+ * @property string $focus
  * @property string $description
  * @method static \Illuminate\Database\Eloquent\Builder|Skill newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Skill newQuery()
@@ -24,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Skill whereLabel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Skill whereName($value)
  * @mixin \Eloquent
+ * @method static Builder|Skill whereFocus($value)
+ * @method static Builder|Skill whereType($value)
  */
 class Skill extends Model
 {
@@ -32,27 +37,27 @@ class Skill extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['is_pitcher', 'label', 'name', 'attribute', 'description'];
+    protected $fillable = ['type', 'attribute', 'name', 'focus', 'description'];
 
     /**
-     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Skill[]|Builder[]|Collection
      */
     public static function batterSkills()
     {
-        return static::where('is_pitcher', '=', 0)->get();
+        return static::where('type', '=', BatterSkill::class)->get();
     }
 
     /**
-     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Skill[]|Builder[]|Collection
      */
     public static function pitcherSkills()
     {
-        return static::where('is_pitcher', '=', 1)->get();
+        return static::where('type', '=', PitcherSkill::class)->get();
     }
 
     /**
      * @param string $class
-     * @return Skill[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Skill[]|Builder[]|Collection
      */
     public static function skillsFor(string $class)
     {

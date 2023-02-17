@@ -72,7 +72,7 @@ class Game
 
                 while (!$this->sideComplete()) {
 
-                    $at_bat = new AtBat($this->batter())
+
 
                     $this->outs++;
                     echo "outs $this->outs\n";

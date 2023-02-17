@@ -3,13 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Player\Batter;
-use App\Models\Player\BatterSkill;
-use App\Models\Player\Pitcher;
-use App\Models\Player\PitcherSkill;
 use App\Models\Player\Player;
 use App\Models\Player\PlayerBackground;
 use App\Models\Player\PlayerPersonality;
 use App\Models\Player\Position;
+use App\Models\Player\Skill\BatterSkill;
+use App\Models\Player\Skill\PitcherSkill;
 use Illuminate\Database\Seeder;
 
 class PlayerSkillSeeder extends Seeder
