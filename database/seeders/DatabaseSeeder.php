@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Player\Skill\PlayerEffort;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,7 +27,9 @@ class DatabaseSeeder extends Seeder
             RosterPositionSeeder::class,
             PlayerBackgroundSeeder::class,
             PlayerPersonalitySeeder::class,
+            FocusSeeder::class,
             SkillSeeder::class,
+            GameChangerSeeder::class,
             CitySeeder::class,
             TeamNameSeeder::class,
             PlayerFirstNameSeeder::class,
@@ -35,11 +38,12 @@ class DatabaseSeeder extends Seeder
             TeamSeeder::class,
             SeasonSeeder::class,
             PlayerSeeder::class,
+            PlayerEffortSeeder::class,
             PlayerSkillSeeder::class,
             StatSeeder::class,
             MatchupSeeder::class,
             LineupSeeder::class,
-            RotationSeeder::class
+            BullpenSeeder::class,
         ]);
     }
 }

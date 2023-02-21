@@ -49,8 +49,8 @@ Route::get('/blah', function(){
     print_r($codes);
 });
 
-Route::get('/sim', function(){
-    $sim = new App\Sim\Sim();
+Route::get('/sim/{id}', function(int $id){
+    $sim = new App\Sim\Sim(\App\Models\League::find(1));
     $sim->run();
 });
 
@@ -67,4 +67,24 @@ Route::get('/lineup/{id}', function(int $id){
         }
     }
     echo '</table>';
+});
+
+Route::get('/gc', function() {
+    $gc = new App\Models\GameChanger\GameChanger();
+    $gc->type = 'blah';
+    $gc->bonus_type = 'import,base_running';
+    $gc->rarity = 1;
+    $gc->roster_position_id = null;
+    $gc->focus_id = '1,2';
+    $gc->player_personality_id = null;
+    $gc->player_background_id = null;
+    $gc->intangible = null;
+    $gc->name = 'blah';
+    $gc->description = 'blah';
+    $gc->image = 'blah';
+    $gc->celebrity = 0;
+    $gc->rep = 0;
+    $gc->fitness = 0;
+    $gc->moxie = 0;
+    $gc->save();
 });

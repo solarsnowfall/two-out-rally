@@ -16,9 +16,7 @@ return new class extends Migration
         Schema::create('pitcher_skills', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('player_id')->index();
-
-            $table->enum('effort', ['very light', 'light', 'normal', 'strong', 'very strong'])
-                ->default('normal');
+            $table->unsignedTinyInteger('player_effort_id')->index();
 
             $table->unsignedTinyInteger('stamina')->default(0);
             $table->unsignedTinyInteger('mechanics')->default(0);
@@ -35,6 +33,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
+            $table->foreign('player_effort_id')->references('id')->on('player_efforts');
         });
     }
 

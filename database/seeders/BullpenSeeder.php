@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Player\Pitcher;
-use App\Models\Team\Rotation;
-use App\Models\Team\RotationPitcher;
+use App\Models\Team\Bullpen;
+use App\Models\Team\BullpenPitcher;
 use App\Models\Team\Team;
 use Illuminate\Database\Seeder;
 
-class RotationSeeder extends Seeder
+class BullpenSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,13 +20,13 @@ class RotationSeeder extends Seeder
         /** @var Team $team */
         foreach (Team::all() as $team) {
 
-            $rotation = new Rotation(['team_id' => $team->id]);
-            $rotation->save();
+            $bullpen = new Bullpen(['team_id' => $team->id]);
+            $bullpen->save();
 
             /** @var Pitcher $pitcher */
             foreach ($team->pitchers() as $pitcher) {
-                RotationPitcher::insert([
-                    'rotation_id' => $rotation->id,
+                BullpenPitcher::insert([
+                    'bullpen_id' => $bullpen->id,
                     'player_id' => $pitcher->id,
                     'roster_position_id' => $pitcher->rosterPosition->id
                 ]);

@@ -78,6 +78,8 @@ use Parental\HasParent;
  * @property-read int|null $offensive_stats_count
  * @property-read \App\Models\Team\TeamPlayer|null $teamPlayer
  * @property-read \App\Models\Player\Position $position
+ * @property-read \App\Models\Player\PlayerPersonality $background
+ * @property-read \App\Models\Player\PlayerPersonality $personality
  */
 class Batter extends Player
 {

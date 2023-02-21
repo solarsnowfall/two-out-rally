@@ -79,6 +79,8 @@ use Parental\HasChildren;
  * @property-read int|null $defensive_stats_count
  * @property-read TeamPlayer $teamPlayer
  * @property-read \App\Models\Player\Position $position
+ * @property-read \App\Models\Player\PlayerPersonality $background
+ * @property-read \App\Models\Player\PlayerPersonality $personality
  */
 class Player extends Model
 {
@@ -122,9 +124,19 @@ class Player extends Model
         return $this->belongsTo(TeamPlayer::class, 'player_id', 'id');
     }
 
+    public function background()
+    {
+        return $this->belongsTo(PlayerPersonality::class);
+    }
+
     public function defensiveStats()
     {
         return $this->hasMany(DefensiveStat::class);
+    }
+
+    public function personality()
+    {
+        return $this->belongsTo(PlayerPersonality::class);
     }
 
     public function position()

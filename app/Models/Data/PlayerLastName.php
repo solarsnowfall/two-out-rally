@@ -34,9 +34,10 @@ class PlayerLastName extends Model
     {
         $chance = mt_rand(0, static::MAX_CHANCE);
 
-        return self::where('chance_low', '<=', $chance)
-            ->where('chance_high', '>', $chance)
-            ->first(['name'])
-            ->name;
+        $name = self::where('chance_low', '<', $chance)
+            ->where('chance_high', '>=', $chance)
+            ->first(['name']);
+
+        return $name->name;
     }
 }

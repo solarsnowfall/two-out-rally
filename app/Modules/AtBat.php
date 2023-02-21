@@ -10,27 +10,29 @@ class AtBat
     /**
      * @var Batter
      */
-    protected Batter $batter;
+    public Batter $batter;
+
+    public HitLocation $hitLocation;
 
     /**
      * @var HitType
      */
-    protected HitType $hitType;
+    public HitType $hitType;
 
     /**
      * @var HitVector
      */
-    protected HitVector $hitVector;
+    public HitVector $hitVector;
 
     /**
      * @var AtBatOutcome
      */
-    protected AtBatOutcome $outcome;
+    public AtBatOutcome $outcome;
 
     /**
      * @var Pitcher
      */
-    protected Pitcher $pitcher;
+    public Pitcher $pitcher;
 
     /**
      * @param Batter $batter
@@ -45,32 +47,23 @@ class AtBat
         if ($this->outcome === AtBatOutcome::Hit) {
             $this->hitType = $this->hitType();
             $this->hitVector = $this->hitVector();
-
+            $this->hitLocation = $this->hitLocation();
         }
     }
 
     /**
-     * @return HitType
+     * @return HitLocation
      */
-    public function getHitType(): HitType
+    public function hitLocation(): HitLocation
     {
-        return $this->hitType;
-    }
-
-    /**
-     * @return AtBatOutcome
-     */
-    public function getOutcome(): AtBatOutcome
-    {
-        return $this->outcome;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPitchCount(): int
-    {
-        return $this->outcome->pitchCount();
+        switch ($this->hitType) {
+            case HitType::FlyBall:
+                return new HitLocation($this->hitVector, $this->flyBallDistance());
+            case HitType::LineDrive:
+                return new HitLocation($this->hitVector, 2);
+            default:
+                return new HitLocation($this->hitVector, 1);
+        }
     }
 
     /**
@@ -78,10 +71,10 @@ class AtBat
      */
     public function hitType(): HitType
     {
-        $lhp = 62.2 + $this->batter->getLiner() * 0.113;
-        $lhp += $this->batter->getGrounder() * 0.296;
-        $lhp += $this->batter->getFlyBall() * 0.354;
-        $lhp -= $this->pitcher->getAvoidLiner() * 0.113;
+        $lhp = 62.2 + $this->batter->skill->liner() * 0.113;
+        $lhp += $this->batter->skill->grounder() * 0.296;
+        $lhp += $this->batter->skill->flyBall() * 0.354;
+        $lhp -= $this->pitcher->skill->avoidLiner() * 0.113;
         $lhp += $this->pitcher->skill->induce_grounder * 0.296;
         $lhp -= $this->pitcher->skill->induce_popup * 0.354;
         $lhp = Chance::constrain($lhp / 100, 0.437, 0.846);
@@ -164,10 +157,10 @@ class AtBat
      */
     protected function ballInPlay(): bool
     {
-        $bip = $this->batter->getWalk() * 0.314;
+        $bip = $this->batter->skill->walk() * 0.314;
         $bip -= $this->batter->skill->avoidStrikeout() * 0.314;
         $bip -= $this->pitcher->skill->avoidWalk() * 0.314;
-        $bip += $this->pitcher->getStrikeout() * 0.314;
+        $bip += $this->pitcher->skill->strikeout() * 0.314;
         $bip = Chance::constrain(($bip + 26.3) / 100, 0.097, 0.56);
 
         return Chance::roll() > $bip;
@@ -178,8 +171,8 @@ class AtBat
      */
     protected function lowHit(): HitType
     {
-        $gb = 64.8 - $this->batter->getLiner() * 0.264;
-        $gb += $this->pitcher->getAvoidLiner() * 0.264;
+        $gb = 64.8 - $this->batter->skill->liner() * 0.264;
+        $gb += $this->pitcher->skill->avoidLiner() * 0.264;
         $gb = Chance::constrain($gb / 100, 0.511, 0.755);
 
         return Chance::roll() > $gb ? HitType::LineDrive : HitType::GroundBall;
@@ -253,10 +246,10 @@ class AtBat
 
     protected function struckOut(): bool
     {
-        $wp = $this->batter->getWalk() * 0.314;
-        $wp -= $this->pitcher->getAvoidWalk() * 0.314;
-        $wp += $this->batter->getAvoidStrikeout() * 0.314;
-        $wp -= $this->pitcher->getStrikeout() * 0.314;
+        $wp = $this->batter->skill->walk() * 0.314;
+        $wp -= $this->pitcher->skill->avoidWalk() * 0.314;
+        $wp += $this->batter->skill->avoidStrikeout() * 0.314;
+        $wp -= $this->pitcher->skill->strikeout() * 0.314;
         $wp = Chance::constrain(($wp + 33.3) / 100, 0.1, 0.6);
 
         return Chance::roll() > $wp;

@@ -5,18 +5,20 @@ namespace App\Models\Stats;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 /**
  * App\Models\Stats\OffensiveStat
  *
  * @property int $id
+ * @property int $game_id
  * @property int $player_id
  * @property int $team_id
  * @property int $season_id
  * @property int $active
  * @property int $pa
- * @property int $1b
- * @property int $2b
- * @property int $3b
+ * @property int $b1
+ * @property int $b2
+ * @property int $b3
  * @property int $hr
  * @property int $r
  * @property int $rbi
@@ -39,14 +41,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat query()
- * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat where1b($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat where2b($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat where3b($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereB1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereB2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereB3($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereBb($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereCs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereFp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereGb($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereGdp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OffensiveStat whereHbp($value)
@@ -72,4 +75,6 @@ use Illuminate\Database\Eloquent\Model;
 class OffensiveStat extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['game_id', 'player_id', 'team_id', 'season_id'];
 }

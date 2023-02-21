@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static Builder|Skill whereFocus($value)
  * @method static Builder|Skill whereType($value)
+ * @property int $focus_id
+ * @method static Builder|Skill whereFocusId($value)
  */
 class Skill extends Model
 {
@@ -37,7 +39,12 @@ class Skill extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['type', 'attribute', 'name', 'focus', 'description'];
+    protected $fillable = ['type', 'attribute', 'name', 'focus_id', 'description'];
+
+    public function focus()
+    {
+        return $this->belongsTo(Focus::class);
+    }
 
     /**
      * @return Skill[]|Builder[]|Collection

@@ -62,11 +62,11 @@ class Lineup extends Model
 
     public function nextBatter()
     {
-        $batter = $this->lineupPlayers->where('batting_order', '=', $this->position+1)->first();
+        $batter = $this->lineupBatters->where('batting_order', '=', $this->position+1)->first();
         $this->position++;
         $this->position %= 9;
 
-        return $batter;
+        return $batter->batter;
     }
 
     public function normalize()

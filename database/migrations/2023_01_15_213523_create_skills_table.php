@@ -15,11 +15,13 @@ return new class extends Migration
     {
         Schema::create('skills', function (Blueprint $table) {
             $table->tinyIncrements('id');
+            $table->unsignedTinyInteger('focus_id');
             $table->string('type')->index();
             $table->string('attribute', 50)->index();
             $table->string('name', 50);
-            $table->enum('focus', ['Control', 'Movement', 'Velocity', 'Vision', 'Muscle', 'Athleticism']);
             $table->text('description');
+
+            $table->foreign('focus_id')->references('id')->on('foci');
         });
     }
 

@@ -5,10 +5,12 @@ namespace App\Models\Stats;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 /**
  * App\Models\Stats\PitchingStat
  *
  * @property int $id
+ * @property int $game_id
  * @property int $player_id
  * @property int $team_id
  * @property int $season_id
@@ -22,9 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $sv
  * @property int $bs
  * @property int $ip
- * @property int $1ba
- * @property int $2ba
- * @property int $3ba
+ * @property int $b1a
+ * @property int $b2a
+ * @property int $b3a
  * @property int $hra
  * @property int $ra
  * @property int $er
@@ -43,10 +45,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat query()
- * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat where1ba($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat where2ba($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat where3ba($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereB1a($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereB2a($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereB3a($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereBba($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereBf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereBk($value)
@@ -54,6 +56,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereCg($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereEr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereGf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereGs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitchingStat whereHbpa($value)
@@ -80,4 +83,6 @@ use Illuminate\Database\Eloquent\Model;
 class PitchingStat extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['game_id', 'player_id', 'team_id', 'season_id'];
 }

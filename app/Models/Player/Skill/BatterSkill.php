@@ -50,13 +50,13 @@ use \Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereStealing($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $effort
+ * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereEffort($value)
+ * @property int $player_effort_id
+ * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill wherePlayerEffortId($value)
  */
-class BatterSkill extends Model implements PlayerSkill
+class BatterSkill extends BasePlayerSkill implements PlayerSkill
 {
-    use HasFactory;
-    use BlendsSkills;
-    use DescribesSkill;
-
     protected $fillable = [
         'player_id',
         'line_drive',
@@ -168,31 +168,31 @@ class BatterSkill extends Model implements PlayerSkill
         return $this->blend($this->discipline, $this->lower_body);
     }
 
-    public function vision()
+    public function vision(): int
     {
         return $this->line_drive + $this->reaction + $this->discipline + $this->bat_control;
     }
 
-    public function muscle()
+    public function muscle(): int
     {
         return $this->fly_ball + $this->lower_body + $this->pull + $this->arm_strength;
     }
 
-    public function athleticism()
+    public function athleticism(): int
     {
         return $this->speed + $this->grace + $this->ground_ball + $this->accuracy;
     }
 
-    public function focus(): BatterFocus
+    protected function resolveFocus(): Focus
     {
         if ($this->vision() > $this->muscle() && $this->vision() > $this->athleticism()) {
-            return BatterFocus::Vision;
+            $this->focus = Focus::find(Focus::VELOCITY);
         } elseif ($this->muscle() > $this->vision() && $this->muscle() > $this->athleticism()) {
-            return BatterFocus::Muscle;
+            $this->focus = Focus::find(Focus::MUSCLE);
         } elseif ($this->athleticism() > $this->vision() && $this->athleticism() > $this->muscle()) {
-            return BatterFocus::Athleticism;
+            $this->focus = Focus::find(Focus::ATHLETICISM);
         }
 
-        return BatterFocus::Balanced;
+        return Focus::find(Focus::BALANCED);
     }
 }

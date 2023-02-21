@@ -19,6 +19,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereName($value)
  * @mixin \Eloquent
+ * @property int $charisma
+ * @property int $chemistry
+ * @property int $competitiveness
+ * @property int $leadership
+ * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereCharisma($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereChemistry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereCompetitiveness($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PlayerPersonality whereLeadership($value)
  */
 class PlayerPersonality extends Model
 {

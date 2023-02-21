@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('rotation_pitchers', function (Blueprint $table) {
+        Schema::create('bullpen_pitchers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('rotation_id');
+            $table->unsignedBigInteger('bullpen_id');
             $table->unsignedBigInteger('player_id');
             $table->unsignedTinyInteger('roster_position_id');
 
-            $table->foreign('rotation_id')->references('id')->on('rotations');
+            $table->foreign('bullpen_id')->references('id')->on('bullpens');
             $table->foreign('player_id')->references('id')->on('players');
             $table->foreign('roster_position_id')->references('id')->on('roster_positions');
         });
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rotation_pitchers');
+        Schema::dropIfExists('bullpen_pitchers');
     }
 };

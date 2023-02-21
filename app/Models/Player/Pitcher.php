@@ -3,8 +3,10 @@
 namespace App\Models\Player;
 
 
+use App\Models\Player\Skill\Focus;
 use App\Models\Player\Skill\PitcherSkill;
 use App\Models\Stats\PitchingStat;
+use App\Modules\PitchType;
 use Parental\HasParent;
 
 /**
@@ -79,6 +81,8 @@ use Parental\HasParent;
  * @property-read int|null $pitching_stats_count
  * @property-read \App\Models\Team\TeamPlayer $teamPlayer
  * @property-read \App\Models\Player\Position $position
+ * @property-read \App\Models\Player\PlayerPersonality $background
+ * @property-read \App\Models\Player\PlayerPersonality $personality
  */
 class Pitcher extends Player
 {
@@ -97,5 +101,12 @@ class Pitcher extends Player
     public function pitchingStats()
     {
         return $this->hasMany(PitchingStat::class);
+    }
+
+    public function pitchType(): PitchType
+    {
+        $roll = mt_rand(1, 100);
+
+
     }
 }

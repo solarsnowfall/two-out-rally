@@ -50,12 +50,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherSkill whereVerticalBreak($value)
  * @mixin \Eloquent
  * @property-read \App\Models\Player\Pitcher $player
+ * @property int $player_effort_id
+ * @method static \Illuminate\Database\Eloquent\Builder|PitcherSkill wherePlayerEffortId($value)
  */
-class PitcherSkill extends Model implements PlayerSkill
+class PitcherSkill extends BasePlayerSkill implements PlayerSkill
 {
-    use HasFactory;
-    use BlendsSkills;
-
     protected $fillable = [
         'player_id',
         'stamina',
@@ -127,16 +126,25 @@ class PitcherSkill extends Model implements PlayerSkill
         return $this->power + $this->delivery + $this->explosiveness + $this->pickoff;
     }
 
-    public function focus(): PitcherFocus
+    public function focus(): Focus
     {
-        if ($this->control() > $this->movement() && $this->control() > $this->velocity()) {
-            return PitcherFocus::Control;
-        } elseif ($this->movement() > $this->control() && $this->movement() > $this->velocity()) {
-            return PitcherFocus::Movement;
-        } elseif ($this->velocity() > $this->control() && $this->velocity() > $this->movement()) {
-            return PitcherFocus::Velocity;
+        if ($this->focus === null) {
+            $this->focus = $this->resolveFocus();
         }
 
-        return PitcherFocus::Balanced;
+        return $this->focus;
+    }
+
+    protected function resolveFocus(): Focus
+    {
+        if ($this->control() > $this->movement() && $this->control() > $this->velocity()) {
+            return Focus::find(Focus::CONTROL);
+        } elseif ($this->movement() > $this->control() && $this->movement() > $this->velocity()) {
+            return Focus::find(Focus::MOVEMENT);
+        } elseif ($this->velocity() > $this->control() && $this->velocity() > $this->movement()) {
+            return Focus::find(Focus::VELOCITY);
+        }
+
+        return Focus::find(Focus::BALANCED);
     }
 }

@@ -60,30 +60,6 @@ trait BlendsSkills
     }
 
     /**
-     * @return array
-     */
-    public static function skillAttributes(): array
-    {
-        $key = Str::plural(Str::snake(class_basename(static::class)));
-
-        $skills = Cache::get($key, []);
-
-        if (!empty($skills)) {
-            return $skills;
-        }
-
-        $playerClass = substr(static::class, 0, -5);
-
-        foreach (Skill::skillsFor($playerClass) as $skill) {
-            $skills[] = $skill->attribute;
-        }
-
-        Cache::put($key, $skills, 60*24);
-
-        return $skills;
-    }
-
-    /**
      * @param array $options
      * @return bool
      */

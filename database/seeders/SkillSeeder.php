@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Player\Skill\BatterSkill;
+use App\Models\Player\Skill\Focus;
 use App\Models\Player\Skill\PitcherSkill;
 use App\Models\Player\Skill\Skill;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SkillSeeder extends Seeder
 {
@@ -21,6 +23,8 @@ class SkillSeeder extends Seeder
         $rows = json_decode($json, true);
 
         foreach ($rows as $row) {
+            $focus = Focus::whereName($row['attribute'])->first();
+            $row['focus_id'] = $focus->id;
             $row['type'] = $row['is_pitcher'] ? PitcherSkill::class : BatterSkill::class;
             $row['attribute'] = $row['label'];
             unset($row['is_pitcher'], $row['label']);

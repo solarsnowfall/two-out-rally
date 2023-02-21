@@ -23,5 +23,6 @@ class HitLocation
 
     public function getDescription(): string
     {
+        return '';
     }
 }

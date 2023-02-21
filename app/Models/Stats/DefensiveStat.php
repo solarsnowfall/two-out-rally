@@ -5,10 +5,12 @@ namespace App\Models\Stats;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 /**
  * App\Models\Stats\DefensiveStat
  *
  * @property int $id
+ * @property int $game_id
  * @property int $player_id
  * @property int $team_id
  * @property int $season_id
@@ -31,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat whereDp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat whereErr($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat whereG($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat wherePb($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DefensiveStat wherePlayerId($value)
@@ -44,4 +47,6 @@ use Illuminate\Database\Eloquent\Model;
 class DefensiveStat extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['game_id', 'player_id', 'team_id', 'season_id'];
 }

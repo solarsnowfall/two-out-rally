@@ -17,9 +17,7 @@ return new class extends Migration
 
             $table->id();
             $table->unsignedBigInteger('player_id');
-
-            $table->enum('stealing', ['never', 'conservative', 'moderate', 'aggressive', 'always'])
-                ->default('conservative');
+            $table->unsignedTinyInteger('player_effort_id');
 
             $table->unsignedTinyInteger('line_drive')->default(0);
             $table->unsignedTinyInteger('reaction')->default(0);
@@ -36,6 +34,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
+            $table->foreign('player_effort_id')->references('id')->on('player_efforts');
         });
     }
 

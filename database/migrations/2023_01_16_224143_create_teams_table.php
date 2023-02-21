@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->index()->nullable();
             $table->unsignedBigInteger('league_id')->index();
-            $table->enum('division', ['Blue', 'Red']);
+            $table->enum('division', ['Red', 'Blue']);
             $table->enum('sub_division', ['West', 'Central', 'East']);
             $table->string('name', 50)->index();
             $table->unsignedTinyInteger('wins')->index()->default(0);

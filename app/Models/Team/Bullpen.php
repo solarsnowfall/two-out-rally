@@ -2,29 +2,32 @@
 
 namespace App\Models\Team;
 
+use App\Models\Player\Pitcher;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Team\Rotation
+ * App\Models\Team\Bullpen
  *
  * @property int $id
  * @property int $team_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\RotationPitcher[] $rotationPitchers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\BullpenPitcher[] $rotationPitchers
  * @property-read int|null $rotation_pitchers_count
  * @property-read \App\Models\Team\Team $team
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereTeamId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen whereTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bullpen whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\BullpenPitcher[] $bullpenPitchers
+ * @property-read int|null $bullpen_pitchers_count
  */
-class Rotation extends Model
+class Bullpen extends Model
 {
     use HasFactory;
 
@@ -33,14 +36,14 @@ class Rotation extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function rotationPitchers()
+    public function bullpenPitchers()
     {
-        return $this->hasMany(RotationPitcher::class);
+        return $this->hasMany(BullpenPitcher::class);
     }
 
     public function pitcherInRotation(int $roster_position_id)
     {
-        return  $this->rotationPitchers
+        return  $this->bullpenPitchers
                     ->where('roster_position_id', '=', $roster_position_id)
                     ->first()
                     ->pitcher;

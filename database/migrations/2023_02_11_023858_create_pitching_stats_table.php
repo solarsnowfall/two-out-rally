@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('pitching_stats', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('game_id')->index();
             $table->unsignedBigInteger('player_id')->index();
             $table->unsignedBigInteger('team_id')->index();
             $table->unsignedBigInteger('season_id')->index();
@@ -29,9 +30,9 @@ return new class extends Migration
             $table->unsignedSmallInteger('sv')->default(0);
             $table->unsignedTinyInteger('bs')->default(0);
             $table->unsignedSmallInteger('ip')->default(0);
-            $table->unsignedSmallInteger('1ba')->default(0);
-            $table->unsignedTinyInteger('2ba')->default(0);
-            $table->unsignedTinyInteger('3ba')->default(0);
+            $table->unsignedSmallInteger('b1a')->default(0);
+            $table->unsignedTinyInteger('b2a')->default(0);
+            $table->unsignedTinyInteger('b3a')->default(0);
             $table->unsignedTinyInteger('hra')->default(0);
             $table->unsignedTinyInteger('ra')->default(0);
             $table->unsignedTinyInteger('er')->default(0);
@@ -50,6 +51,7 @@ return new class extends Migration
             $table->foreign('player_id')->references('id')->on('players');
             $table->foreign('team_id')->references('id')->on('teams');
             $table->foreign('season_id')->references('id')->on('seasons');
+            $table->foreign('game_id')->references('id')->on('games');
         });
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('defensive_stats', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('game_id')->index();
             $table->unsignedBigInteger('player_id')->index();
             $table->unsignedBigInteger('team_id')->index();
             $table->unsignedBigInteger('season_id')->index();
@@ -32,6 +33,7 @@ return new class extends Migration
             $table->foreign('player_id')->references('id')->on('players');
             $table->foreign('team_id')->references('id')->on('teams');
             $table->foreign('season_id')->references('id')->on('seasons');
+            $table->foreign('game_id')->references('id')->on('games');
         });
     }
 

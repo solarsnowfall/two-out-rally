@@ -42,6 +42,8 @@ class Series
             $this->games[$this->game]->run();
             $this->game++;
         }
+
+        echo "<br />Series Complete<br />";
     }
 
     public function save()

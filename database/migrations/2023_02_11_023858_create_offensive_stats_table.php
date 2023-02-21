@@ -15,15 +15,16 @@ return new class extends Migration
     {
         Schema::create('offensive_stats', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('game_id')->index();
             $table->unsignedBigInteger('player_id')->index();
             $table->unsignedBigInteger('team_id')->index();
             $table->unsignedBigInteger('season_id')->index();
             $table->boolean('active')->default(true)->index();
 
             $table->unsignedSmallInteger('pa')->default(0);
-            $table->unsignedSmallInteger('1b')->default(0);
-            $table->unsignedTinyInteger('2b')->default(0);
-            $table->unsignedTinyInteger('3b')->default(0);
+            $table->unsignedSmallInteger('b1')->default(0);
+            $table->unsignedTinyInteger('b2')->default(0);
+            $table->unsignedTinyInteger('b3')->default(0);
             $table->unsignedTinyInteger('hr')->default(0);
             $table->unsignedSmallInteger('r')->default(0);
             $table->unsignedSmallInteger('rbi')->default(0);
@@ -46,6 +47,7 @@ return new class extends Migration
             $table->foreign('player_id')->references('id')->on('players');
             $table->foreign('team_id')->references('id')->on('teams');
             $table->foreign('season_id')->references('id')->on('seasons');
+            $table->foreign('game_id')->references('id')->on('games');
         });
     }
 

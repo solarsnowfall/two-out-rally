@@ -28,8 +28,12 @@ use SebastianBergmann\Diff\Line;
  * @property string $state
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\TeamPlayer[] $roster
- * @property-read int|null $roster_count
+ * @property-read \App\Models\Team\Bullpen|null $bullpen
+ * @property-read League $league
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\Lineup[] $lineups
+ * @property-read int|null $lineups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Player[] $players
+ * @property-read int|null $players_count
  * @method static \Illuminate\Database\Eloquent\Builder|Team newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Team newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Team query()
@@ -46,14 +50,6 @@ use SebastianBergmann\Diff\Line;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereWins($value)
  * @mixin \Eloquent
- * @property-read League $league
- * @property-read \Illuminate\Database\Eloquent\Collection|Player[] $players
- * @property-read int|null $players_count
- * @property array|null $default_lineup
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereDefaultLineup($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\Lineup[] $lineups
- * @property-read int|null $lineups_count
- * @property-read \App\Models\Team\Rotation|null $rotation
  */
 class Team extends Model
 {
@@ -97,14 +93,25 @@ class Team extends Model
         return $this->players->where('type', 'like', Pitcher::class);
     }
 
-    public function rotation()
+    public function bullpen()
     {
-        return $this->hasOne(Rotation::class);
+        return $this->hasOne(Bullpen::class);
     }
 
     public function lineups()
     {
         return $this->hasMany(Lineup::class);
+    }
+
+    public function intangibles(): Intangibles
+    {
+        $intangibles = new Intangibles();
+        /** @var Player $player */
+        foreach ($this->players as $player) {
+            $intangibles->consume($player->personality);
+        }
+
+        return $intangibles;
     }
 
     public function setLineupForPitcher(Pitcher $pitcher)
@@ -127,7 +134,7 @@ class Team extends Model
     public function startingPitcher(int $game_num)
     {
         $game_num %= 4;
-        return $this->rotation->pitcherInRotation(
+        return $this->bullpen->pitcherInRotation(
             RosterPosition::STARTING_PITCHER1 + $game_num
         );
     }
