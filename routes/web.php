@@ -88,3 +88,12 @@ Route::get('/gc', function() {
     $gc->moxie = 0;
     $gc->save();
 });
+
+Route::get('/make-user', function(){
+    $user = new \App\Models\User();
+    $user->email = 'travis@twooutrally.com';
+    $user->name = 'Travis Miller';
+    $user->email_verified_at = (string) \Carbon\Carbon::now();
+    $user->password = \Illuminate\Support\Facades\Hash::make('password');
+    $user->save();
+});

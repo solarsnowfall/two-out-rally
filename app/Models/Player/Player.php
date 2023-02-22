@@ -2,10 +2,12 @@
 
 namespace App\Models\Player;
 
+use App\Models\GameChanger\GameChanger;
 use App\Models\Stats\DefensiveStat;
 use App\Models\Team\RosterPosition;
 use App\Models\Team\Team;
 use App\Models\Team\TeamPlayer;
+use App\Models\UserGameChanger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Parental\HasChildren;
@@ -165,6 +167,18 @@ class Player extends Model
             'id',
             'id',
             'team_id'
+        );
+    }
+
+    public function gameChangers()
+    {
+        return $this->hasManyThrough(
+            GameChanger::class,
+            UserGameChanger::class,
+            'player_id',
+            'id',
+            'id',
+            'game_changer_id'
         );
     }
 }
