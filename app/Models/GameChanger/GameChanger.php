@@ -48,6 +48,13 @@ use Parental\HasChildren;
  * @method static \Illuminate\Database\Eloquent\Builder|GameChanger whereRosterPositionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GameChanger whereType($value)
  * @mixin \Eloquent
+ * @property string $category
+ * @property-read \App\Models\GameChanger\BatterSkill|null $batterSkill
+ * @property-read \App\Models\GameChanger\PitcherSkill|null $pitcherSkill
+ * @property-read PlayerBackground|null $playerBackground
+ * @property-read PlayerPersonality|null $playerPersonality
+ * @property-read RosterPosition|null $position
+ * @method static \Illuminate\Database\Eloquent\Builder|GameChanger whereCategory($value)
  */
 class GameChanger extends Model
 {

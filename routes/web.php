@@ -42,11 +42,12 @@ Route::get('/stats', function(){
 });
 
 Route::get('/blah', function(){
-    $rows = \Illuminate\Support\Facades\DB::connection('tor_old')
-        ->select('SELECT * FROM tor_wbl_events_human4_p1s19');
-    $codes = array_column($rows, 'code');
-    $codes = array_unique($codes);
-    print_r($codes);
+    $pitcher = \App\Models\Player\Pitcher::find(1);
+    $average = new \App\Modules\AveragePlayerSkills(
+        \App\Models\League::find(1),
+        \App\Models\Player\Pitcher::class
+    );
+    $pitcher->skill->normalize($average->getAverageSkills());
 });
 
 Route::get('/sim/{id}', function(int $id){

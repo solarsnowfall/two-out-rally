@@ -83,6 +83,8 @@ use Parental\HasChildren;
  * @property-read \App\Models\Player\Position $position
  * @property-read \App\Models\Player\PlayerPersonality $background
  * @property-read \App\Models\Player\PlayerPersonality $personality
+ * @property-read \Illuminate\Database\Eloquent\Collection|GameChanger[] $gameChangers
+ * @property-read int|null $game_changers_count
  */
 class Player extends Model
 {

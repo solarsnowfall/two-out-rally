@@ -43,6 +43,8 @@ use Parental\HasParent;
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherGameChanger whereRosterPositionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherGameChanger whereType($value)
  * @mixin \Eloquent
+ * @property string $category
+ * @method static \Illuminate\Database\Eloquent\Builder|PitcherGameChanger whereCategory($value)
  */
 class PitcherGameChanger extends GameChanger
 {

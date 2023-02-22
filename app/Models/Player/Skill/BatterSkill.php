@@ -54,6 +54,7 @@ use \Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill whereEffort($value)
  * @property int $player_effort_id
  * @method static \Illuminate\Database\Eloquent\Builder|BatterSkill wherePlayerEffortId($value)
+ * @property-read \App\Models\Player\Skill\PlayerEffort $playerEffort
  */
 class BatterSkill extends BasePlayerSkill implements PlayerSkill
 {

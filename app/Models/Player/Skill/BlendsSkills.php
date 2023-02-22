@@ -8,47 +8,6 @@ use Illuminate\Support\Str;
 trait BlendsSkills
 {
     /**
-     * @var bool
-     */
-    private bool $normalized = false;
-
-
-    /**
-     * @param PlayerSkill $average
-     * @return void
-     */
-    public function normalize(PlayerSkill $average): void
-    {
-        if ($this->normalized) {
-            return;
-        }
-
-        foreach (static::skillAttributes() as $skill) {
-            $this->$skill = $this->normalizedSkill($skill, $average);
-        }
-
-        $this->normalized = true;
-    }
-
-    /**
-     * @param string $name
-     * @param PlayerSkill $average
-     * @return int
-     */
-    protected function normalizedSkill(string $name, PlayerSkill $average): int
-    {
-        $skill = $this->$name;
-
-        if (!$this->player->user_id) {
-            $skill *= 3 / 4;
-        }
-
-        $normalized = round(($skill / $average->$name / 2) * 100);
-
-        return min($normalized, 100);
-    }
-
-    /**
      * @param int $skill1
      * @param int $skill2
      * @param int $skill3

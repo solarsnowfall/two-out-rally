@@ -52,6 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Player\Pitcher $player
  * @property int $player_effort_id
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherSkill wherePlayerEffortId($value)
+ * @property-read \App\Models\Player\Skill\PlayerEffort $playerEffort
  */
 class PitcherSkill extends BasePlayerSkill implements PlayerSkill
 {
@@ -70,16 +71,6 @@ class PitcherSkill extends BasePlayerSkill implements PlayerSkill
         'explosiveness',
         'pickoff'
     ];
-
-    public function player()
-    {
-        return $this->belongsTo(Pitcher::class);
-    }
-
-    public function pitcher()
-    {
-        return $this->player;
-    }
 
     public function avoidFlyBallPower(): int
     {
@@ -146,5 +137,12 @@ class PitcherSkill extends BasePlayerSkill implements PlayerSkill
         }
 
         return Focus::find(Focus::BALANCED);
+    }
+
+    public function normalize(PlayerSkill $average): void
+    {
+        parent::normalize($average);
+
+
     }
 }

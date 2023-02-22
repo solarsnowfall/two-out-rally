@@ -5,6 +5,8 @@ namespace App\Modules;
 use App\Models\League;
 use App\Models\Player\Batter;
 use App\Models\Player\Pitcher;
+use App\Models\Player\Skill\BatterSkill;
+use App\Models\Player\Skill\PitcherSkill;
 use App\Models\Player\Skill\PlayerSkill;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -30,7 +32,7 @@ class AveragePlayerSkills
 
         $this->league = $league;
         $this->class = $class;
-        $this->skillClass = $this->class . 'Skill';
+        $this->skillClass = $class === Batter::class ? BatterSkill::class : PitcherSkill::class;
         $this->skillTable = Str::snake(class_basename($this->skillClass)) . 's';
         $this->skill = $this->getAverageSkills();
     }
@@ -57,9 +59,8 @@ class AveragePlayerSkills
 
     private function fetchAveragedAttributes()
     {
-        $columns = forward_static_call([$this->skillClass, 'listSkills']);
+        $columns = forward_static_call([$this->skillClass, 'skillAttributes']);
 
-        //$skills = BatterSkill::select($columns)
         $skills = forward_static_call([$this->skillClass, 'select'], $columns)
             ->leftJoin('team_players', "{$this->skillTable}.id", '=', 'team_players.player_id')
             ->leftJoin('teams', 'team_players.team_id', '=', 'teams.id')
