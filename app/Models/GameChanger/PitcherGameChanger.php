@@ -45,6 +45,11 @@ use Parental\HasParent;
  * @mixin \Eloquent
  * @property string $category
  * @method static \Illuminate\Database\Eloquent\Builder|PitcherGameChanger whereCategory($value)
+ * @property-read \App\Models\GameChanger\BatterSkill|null $batterSkill
+ * @property-read \App\Models\GameChanger\PitcherSkill|null $pitcherSkill
+ * @property-read \App\Models\Player\PlayerBackground|null $playerBackground
+ * @property-read \App\Models\Player\PlayerPersonality|null $playerPersonality
+ * @property-read \App\Models\Team\RosterPosition|null $position
  */
 class PitcherGameChanger extends GameChanger
 {

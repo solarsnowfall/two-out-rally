@@ -45,6 +45,11 @@ use App\Models\GameChanger\PitcherGameChanger;
  * @method static \Illuminate\Database\Eloquent\Builder|EffectivelyWild whereRosterPositionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|EffectivelyWild whereType($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\GameChanger\BatterSkill|null $batterSkill
+ * @property-read \App\Models\GameChanger\PitcherSkill|null $pitcherSkill
+ * @property-read \App\Models\Player\PlayerBackground|null $playerBackground
+ * @property-read \App\Models\Player\PlayerPersonality|null $playerPersonality
+ * @property-read \App\Models\Team\RosterPosition|null $position
  */
 class EffectivelyWild extends PitcherGameChanger
 {

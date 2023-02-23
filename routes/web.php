@@ -42,12 +42,9 @@ Route::get('/stats', function(){
 });
 
 Route::get('/blah', function(){
-    $pitcher = \App\Models\Player\Pitcher::find(1);
-    $average = new \App\Modules\AveragePlayerSkills(
-        \App\Models\League::find(1),
-        \App\Models\Player\Pitcher::class
-    );
-    $pitcher->skill->normalize($average->getAverageSkills());
+    $bullpen = \App\Models\Team\Bullpen::find(1);
+    $bullpen->normalize();
+    dd($bullpen->startingPitcher1()->skill->paint_corner());
 });
 
 Route::get('/sim/{id}', function(int $id){

@@ -3,6 +3,7 @@
 namespace App\Models\Team;
 
 use App\Models\Player\Pitcher;
+use App\Modules\AveragePlayerSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,9 +32,30 @@ class Bullpen extends Model
 {
     use HasFactory;
 
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * @var Pitcher[]
+     */
+    protected array $pitchers = [];
+
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function pitchers(?int $roster_position_id = null): array|Pitcher
+    {
+        if (!count($this->pitchers)) {
+            foreach ($this->bullpenPitchers as $bullpenPitcher) {
+                $this->pitchers[$bullpenPitcher->roster_position_id] = $bullpenPitcher->pitcher;
+            }
+        }
+
+        return $roster_position_id === null ? $this->pitchers : $this->pitchers[$roster_position_id];
     }
 
     public function bullpenPitchers()
@@ -41,77 +63,78 @@ class Bullpen extends Model
         return $this->hasMany(BullpenPitcher::class);
     }
 
-    public function pitcherInRotation(int $roster_position_id)
+    public function normalize()
     {
-        return  $this->bullpenPitchers
-                    ->where('roster_position_id', '=', $roster_position_id)
-                    ->first()
-                    ->pitcher;
+        $average = new AveragePlayerSkills($this->team->league, Pitcher::class);
+
+        foreach ($this->pitchers() as $pitcher) {
+            $pitcher->skill->normalize($average->skill);
+        }
     }
 
     public function startingPitcher(int $game)
     {
         $game %= 4;
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER1 + $game);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER1 + $game);
     }
 
-    public function startingPitcher1()
+    public function startingPitcher1(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER1);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER1);
     }
 
-    public function startingPitcher2()
+    public function startingPitcher2(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER2);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER2);
     }
 
-    public function startingPitcher3()
+    public function startingPitcher3(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER3);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER3);
     }
 
-    public function startingPitcher4()
+    public function startingPitcher4(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER4);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER4);
     }
 
-    public function startingPitcher5()
+    public function startingPitcher5(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::STARTING_PITCHER5);
+        return $this->pitchers(RosterPosition::STARTING_PITCHER5);
     }
 
-    public function middleReliever1()
+    public function middleReliever1(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::MIDDLE_RELIEF_PITCHER1);
+        return $this->pitchers(RosterPosition::MIDDLE_RELIEF_PITCHER1);
     }
 
-    public function middleReliever2()
+    public function middleReliever2(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::MIDDLE_RELIEF_PITCHER2);
+        return $this->pitchers(RosterPosition::MIDDLE_RELIEF_PITCHER2);
     }
 
-    public function middleReliever3()
+    public function middleReliever3(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::MIDDLE_RELIEF_PITCHER3);
+        return $this->pitchers(RosterPosition::MIDDLE_RELIEF_PITCHER3);
     }
 
-    public function middleReliever4()
+    public function middleReliever4(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::MIDDLE_RELIEF_PITCHER4);
+        return $this->pitchers(RosterPosition::MIDDLE_RELIEF_PITCHER4);
     }
 
-    public function setupPitcher1()
+    public function setupPitcher1(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::SETUP_PITCHER1);
+        return $this->pitchers(RosterPosition::SETUP_PITCHER1);
     }
 
-    public function setupPitcher2()
+    public function setupPitcher2(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::SETUP_PITCHER2);
+        return $this->pitchers(RosterPosition::SETUP_PITCHER2);
     }
 
-    public function closingPitcher()
+    public function closingPitcher(): Pitcher
     {
-        return $this->pitcherInRotation(RosterPosition::CLOSING_PITCHER);
+        return $this->pitchers(RosterPosition::CLOSING_PITCHER);
     }
 }

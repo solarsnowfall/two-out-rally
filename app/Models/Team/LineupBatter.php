@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|LineupBatter wherePlayerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LineupBatter whereRosterPositionId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Team\RosterPosition $rosterPosition
  */
 class LineupBatter extends Model
 {
@@ -37,5 +38,10 @@ class LineupBatter extends Model
     public function batter()
     {
         return $this->player();
+    }
+
+    public function rosterPosition()
+    {
+        return $this->belongsTo(RosterPosition::class);
     }
 }

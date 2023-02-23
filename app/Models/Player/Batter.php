@@ -4,6 +4,8 @@ namespace App\Models\Player;
 
 use App\Models\Player\Skill\BatterSkill;
 use App\Models\Stats\DefensiveStat;
+use App\Models\Team\LineupBatter;
+use App\Models\Team\RosterPosition;
 use Parental\HasParent;
 
 /**
@@ -82,12 +84,15 @@ use Parental\HasParent;
  * @property-read \App\Models\Player\PlayerPersonality $personality
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GameChanger\GameChanger[] $gameChangers
  * @property-read int|null $game_changers_count
+ * @property-read LineupBatter|null $lineupBatter
  */
 class Batter extends Player
 {
     use HasParent;
 
     protected $table = 'players';
+
+    protected $lineupPosition;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -97,8 +102,24 @@ class Batter extends Player
         return $this->hasOne(BatterSkill::class, 'player_id', 'id');
     }
 
-    public function offensiveStats()
+    public function lineupBatter()
     {
-        return $this->hasMany(DefensiveStat::class);
+        return $this->hasOne(LineupBatter::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function lineupPosition()
+    {
+        return $this->lineupBatter->rosterPosition();
+    }
+
+    public function offPosition(): bool
+    {
+        $lineupPosition = $this->lineupPosition()->first();
+
+        return  $lineupPosition->id !== RosterPosition::DESIGNATED_HITTER
+                && $lineupPosition->position_id !== $this->position_id;
     }
 }

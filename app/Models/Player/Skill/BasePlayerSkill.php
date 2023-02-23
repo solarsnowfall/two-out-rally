@@ -48,31 +48,31 @@ abstract class BasePlayerSkill extends Model
             return;
         }
 
-        foreach (static::skillAttributes() as $skill) {
-            $this->$skill = $this->normalizedSkill($skill, $average);
+        foreach (static::skillAttributes() as $attribute) {
+            $this->$attribute = $this->normalizedSkill($attribute, $average);
         }
 
-        if ($this instanceof PitcherSkill) {
-            $this->normalizePitchingEffort();
-        }
+        $this instanceof PitcherSkill
+            ? $this->normalizePitchingEffort()
+            : $this->penalizeOffPosition();
 
         $this->normalized = true;
     }
 
     /**
-     * @param string $name
+     * @param string $attribute
      * @param PlayerSkill $average
      * @return int
      */
-    protected function normalizedSkill(string $name, PlayerSkill $average): int
+    protected function normalizedSkill(string $attribute, PlayerSkill $average): int
     {
-        $skill = $this->$name;
+        $skill = $this->$attribute;
 
         if (!$this->player->user_id) {
             $skill *= 3 / 4;
         }
 
-        $normalized = floor(($skill / $average->$name / 2) * 100);
+        $normalized = floor(($skill / $average->$attribute / 2) * 100);
         $normalized += floor(($this->player->moxie - 50) / 10);
 
         return max(min($normalized, 100), 0);
@@ -90,6 +90,15 @@ abstract class BasePlayerSkill extends Model
             $offset = min($this->stamina, $offset);
             $this->stamina -= $offset;
             $this->power += $offset;
+        }
+    }
+
+    protected function penalizeOffPosition()
+    {
+        if ($this->player->offPosition()) {
+            foreach (static::skillAttributes() as $attribute) {
+                $this->$attribute -= ceil($this->$attribute / 10);
+            }
         }
     }
 

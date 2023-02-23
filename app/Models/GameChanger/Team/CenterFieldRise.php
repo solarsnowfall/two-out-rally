@@ -45,6 +45,11 @@ use App\Models\GameChanger\TeamGameChanger;
  * @method static \Illuminate\Database\Eloquent\Builder|CenterFieldRise whereRosterPositionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CenterFieldRise whereType($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\GameChanger\BatterSkill|null $batterSkill
+ * @property-read \App\Models\GameChanger\PitcherSkill|null $pitcherSkill
+ * @property-read \App\Models\Player\PlayerBackground|null $playerBackground
+ * @property-read \App\Models\Player\PlayerPersonality|null $playerPersonality
+ * @property-read \App\Models\Team\RosterPosition|null $position
  */
 class CenterFieldRise extends TeamGameChanger
 {

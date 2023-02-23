@@ -34,7 +34,7 @@ class LineupSeeder extends Seeder
                         'lineup_id' => $lineup->id,
                         'player_id' => $batter->id,
                         'roster_position_id' => $batter->rosterPosition->id,
-                        'batting_order' => $k + 1
+                        'batting_order' => $k
                     ]);
                 }
             }

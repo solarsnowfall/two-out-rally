@@ -6,6 +6,7 @@ use App\Models\Player\Batter;
 use App\Modules\AveragePlayerSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Team\Lineup
@@ -32,41 +33,56 @@ class Lineup extends Model
 {
     use HasFactory;
 
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
-    protected $batters;
-    protected int $position = 1;
+    /**
+     * @var Batter[]
+     */
+    protected array $batters = [];
 
+    /**
+     * @var int
+     */
+    protected int $batting_order = 0;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|Team
+     */
     public function team()
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function batters()
+    public function batters(?int $batting_order = null)
     {
-        if ($this->batters) {
-            return $this->batters;
+        if (!count($this->batters)) {
+            foreach ($this->lineupBatters as $lineupPlayer) {
+                $this->batters[$lineupPlayer->batting_order] = $lineupPlayer->batter;
+            }
+            ksort($this->batters);
         }
 
-        foreach ($this->lineupBatters as $lineupPlayer) {
-            $this->batters[] = $lineupPlayer->batter;
-        }
-
-        return $this->batters;
+        return $batting_order === null ? $this->batters : $this->batters[$batting_order];
     }
 
-    public function lineupBatters()
+    /**
+     * @return HasMany|LineupBatter[]
+     */
+    public function lineupBatters(): HasMany|array
     {
        return $this->hasMany(LineupBatter::class);
     }
 
     public function nextBatter()
     {
-        $batter = $this->lineupBatters->where('batting_order', '=', $this->position+1)->first();
-        $this->position++;
-        $this->position %= 9;
+        $batter = $this->batters($this->batting_order);
+        $this->batting_order += 10;
+        $this->batting_order %= 9;
 
-        return $batter->batter;
+        return $batter;
     }
 
     public function normalize()
