@@ -115,6 +115,8 @@ class Player extends Model
         'birth_season'
     ];
 
+    public bool $benched = false;
+
     /**
      * @return bool
      */

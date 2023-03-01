@@ -14,14 +14,17 @@ class Fielding
     {
         $this->game = $game;
         $this->atBat = $atBat;
-        $this->fieldBall();
     }
 
     public function fieldBall()
     {
+        if (!isset($this->atBat->hitLocation)) {
+            dd($this->atBat);
+        }
+
         switch ($this->atBat->hitLocation->getGridLocation()) {
             case 'a1':
-
+                break;
         }
     }
 }

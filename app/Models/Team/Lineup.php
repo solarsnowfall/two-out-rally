@@ -7,6 +7,7 @@ use App\Modules\AveragePlayerSkills;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use InvalidArgumentException;
 
 /**
  * App\Models\Team\Lineup
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\LineupBatter[] $lineupBatters
  * @property-read int|null $lineup_batters_count
  */
-class Lineup extends Model
+class Lineup extends PlayerCollection
 {
     use HasFactory;
 
@@ -39,33 +40,31 @@ class Lineup extends Model
     public $timestamps = false;
 
     /**
-     * @var Batter[]
-     */
-    protected array $batters = [];
-
-    /**
      * @var int
      */
     protected int $batting_order = 0;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|Team
+     * @var string
      */
-    public function team()
+    protected string $player_index = 'batting_order';
+
+    /**
+     * @param int|null $batting_order
+     * @return Batter[]|Batter
+     */
+    public function batters(?int $batting_order = null): array|Batter
     {
-        return $this->belongsTo(Team::class);
+        return $this->players($batting_order);
     }
 
-    public function batters(?int $batting_order = null)
+    /**
+     * @param Batter $batter
+     * @return bool
+     */
+    public function hasBatter(Batter $batter): bool
     {
-        if (!count($this->batters)) {
-            foreach ($this->lineupBatters as $lineupPlayer) {
-                $this->batters[$lineupPlayer->batting_order] = $lineupPlayer->batter;
-            }
-            ksort($this->batters);
-        }
-
-        return $batting_order === null ? $this->batters : $this->batters[$batting_order];
+        return $this->hasPlayer($batter);
     }
 
     /**
@@ -76,7 +75,15 @@ class Lineup extends Model
        return $this->hasMany(LineupBatter::class);
     }
 
-    public function nextBatter()
+    public function currentBatter(): Batter
+    {
+        return $this->batters($this->batting_order);
+    }
+
+    /**
+     * @return Batter
+     */
+    public function nextBatter(): Batter
     {
         $batter = $this->batters($this->batting_order);
         $this->batting_order += 10;
@@ -85,65 +92,68 @@ class Lineup extends Model
         return $batter;
     }
 
-    public function normalize()
-    {
-        $average = new AveragePlayerSkills($this->team->league, Batter::class);
-
-        /** @var Batter $batter */
-        foreach ($this->batters() as $batter) {
-            $batter->skill->normalize($average->skill);
-        }
-    }
-
     public function reset()
     {
         $this->position = 0;
     }
 
-    public function fielderForPosition(int $roster_position_id)
+    /**
+     * @param int $roster_position_id
+     * @return Batter
+     */
+    public function fielderForPosition(int $roster_position_id): Batter
     {
-        return  $this->lineupPlayers
-                    ->where('roster_position_id', '=', $roster_position_id)
-                    ->first()
-                    ->batter;
+        if ($roster_position_id < RosterPosition::CATCHER || $roster_position_id > RosterPosition::RIGHT_FIELDER) {
+            throw new InvalidArgumentException(
+                "Invalid roster position supplied: $roster_position_id"
+            );
+        }
+
+        foreach ($this->batters() as $batter) {
+            if ($batter->rosterPosition->id === $roster_position_id) {
+                break;
+            }
+        }
+
+        return $batter;
     }
 
-    public function catcher()
+    public function catcher(): Batter
     {
         return $this->fielderForPosition(RosterPosition::CATCHER);
     }
 
-    public function firstBaseman()
+    public function firstBaseman(): Batter
     {
         return $this->fielderForPosition(RosterPosition::FIRST_BASEMAN);
     }
 
-    public function secondBaseman()
+    public function secondBaseman(): Batter
     {
         return $this->fielderForPosition(RosterPosition::SECOND_BASEMAN);
     }
 
-    public function shortstop()
+    public function shortstop(): Batter
     {
         return $this->fielderForPosition(RosterPosition::SHORTSTOP);
     }
 
-    public function thirdBaseman()
+    public function thirdBaseman(): Batter
     {
         return $this->fielderForPosition(RosterPosition::THIRD_BASEMAN);
     }
 
-    public function leftFielder()
+    public function leftFielder(): Batter
     {
         return $this->fielderForPosition(RosterPosition::LEFT_FIELDER);
     }
 
-    public function centerFielder()
+    public function centerFielder(): Batter
     {
         return $this->fielderForPosition(RosterPosition::CENTER_FIELDER);
     }
 
-    public function rightFielder()
+    public function rightFielder(): Batter
     {
         return $this->fielderForPosition(RosterPosition::RIGHT_FIELDER);
     }

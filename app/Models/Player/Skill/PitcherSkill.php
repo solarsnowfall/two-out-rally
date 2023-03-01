@@ -142,7 +142,5 @@ class PitcherSkill extends BasePlayerSkill implements PlayerSkill
     public function normalize(PlayerSkill $average): void
     {
         parent::normalize($average);
-
-
     }
 }

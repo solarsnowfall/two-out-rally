@@ -95,3 +95,8 @@ Route::get('/make-user', function(){
     $user->password = \Illuminate\Support\Facades\Hash::make('password');
     $user->save();
 });
+
+Route::get('/wpa', function(){
+    $wpa = new \App\Sim\WpaTable();
+    print_r($wpa->getTree());
+});

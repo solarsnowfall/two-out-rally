@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\BullpenPitcher[] $bullpenPitchers
  * @property-read int|null $bullpen_pitchers_count
  */
-class Bullpen extends Model
+class Bullpen extends PlayerCollection
 {
     use HasFactory;
 
@@ -36,6 +36,8 @@ class Bullpen extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    public Pitcher $pitcher;
 
     /**
      * @var Pitcher[]
@@ -49,27 +51,12 @@ class Bullpen extends Model
 
     public function pitchers(?int $roster_position_id = null): array|Pitcher
     {
-        if (!count($this->pitchers)) {
-            foreach ($this->bullpenPitchers as $bullpenPitcher) {
-                $this->pitchers[$bullpenPitcher->roster_position_id] = $bullpenPitcher->pitcher;
-            }
-        }
-
-        return $roster_position_id === null ? $this->pitchers : $this->pitchers[$roster_position_id];
+        return $this->players($roster_position_id);
     }
 
     public function bullpenPitchers()
     {
         return $this->hasMany(BullpenPitcher::class);
-    }
-
-    public function normalize()
-    {
-        $average = new AveragePlayerSkills($this->team->league, Pitcher::class);
-
-        foreach ($this->pitchers() as $pitcher) {
-            $pitcher->skill->normalize($average->skill);
-        }
     }
 
     public function startingPitcher(int $game)
@@ -136,5 +123,28 @@ class Bullpen extends Model
     public function closingPitcher(): Pitcher
     {
         return $this->pitchers(RosterPosition::CLOSING_PITCHER);
+    }
+
+    public function currentPitcher(): Pitcher
+    {
+        return $this->pitcher;
+    }
+
+    public function setStartingPitcher(int $game_num): void
+    {
+        $this->pitcher = $this->startingPitcher($game_num);
+    }
+
+    public function makeSubstitution(Gambit $rule)
+    {
+        $this->pitcher->benched = true;
+
+        if (!$this->pitchers($rule->sub_roster_position_id)->benched) {
+            $this->pitcher = $this->pitchers($rule->sub_roster_position_id);
+        } else {
+            $this->pitcher = $this->pitchers($rule->bu_sub_roster_position_id);
+        }
+
+        dd('substitution made');
     }
 }

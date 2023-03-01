@@ -81,8 +81,8 @@ class Bases
             }
 
             if ($i + $num_bases > 3) {
-                $this->game->offensive_stats->forPlayer($this->base($i))->r++;
-                $this->game->offensive_stats->forPlayer($batter)->rbi++;
+                $this->game->offensiveStats($this->base($i))->r++;
+                $this->game->offensiveStats($batter)->rbi++;
                 $this->game->runs[$this->game->side]++;
             } else {
                 $this->setBase($i+1, $this->base($i));

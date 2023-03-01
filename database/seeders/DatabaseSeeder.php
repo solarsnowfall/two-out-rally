@@ -44,6 +44,8 @@ class DatabaseSeeder extends Seeder
             MatchupSeeder::class,
             LineupSeeder::class,
             BullpenSeeder::class,
+            GambitSeeder::class,
+            WpaConditionSeeder::class
         ]);
     }
 }

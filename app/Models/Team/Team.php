@@ -50,6 +50,8 @@ use SebastianBergmann\Diff\Line;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereWins($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team\Gambit[] $gambits
+ * @property-read int|null $gambits_count
  */
 class Team extends Model
 {
@@ -60,6 +62,8 @@ class Team extends Model
     ];
 
     private Lineup $lineup;
+
+    private ?Intangibles $intangibles = null;
 
     public function getLineup(): Lineup
     {
@@ -103,15 +107,22 @@ class Team extends Model
         return $this->hasMany(Lineup::class);
     }
 
+    public function gambits()
+    {
+        return $this->hasMany(Gambit::class);
+    }
+
     public function intangibles(): Intangibles
     {
-        $intangibles = new Intangibles();
-        /** @var Player $player */
-        foreach ($this->players as $player) {
-            $intangibles->consume($player->personality);
+        if ($this->intangibles === null) {
+            $this->intangibles = new Intangibles();
+            /** @var Player $player */
+            foreach ($this->players as $player) {
+                $this->intangibles->consume($player->personality);
+            }
         }
 
-        return $intangibles;
+        return $this->intangibles;
     }
 
     public function setLineupForPitcher(Pitcher $pitcher)
@@ -134,7 +145,7 @@ class Team extends Model
     public function startingPitcher(int $game_num)
     {
         $game_num %= 4;
-        return $this->bullpen->pitcherInRotation(
+        return $this->bullpen->pitchers(
             RosterPosition::STARTING_PITCHER1 + $game_num
         );
     }
