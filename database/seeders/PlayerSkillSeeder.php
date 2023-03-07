@@ -115,7 +115,7 @@ class PlayerSkillSeeder extends Seeder
         foreach ($points as $player_id => $focus) {
             $skills[$player_id] = [
                 'player_id' => $player_id,
-                'player_effort_id' => PlayerEffort::PITCHING_NORMAL
+                'player_effort_id' => PlayerEffort::STEALING_CONSERVATIVE
             ];
             foreach ($list as $group) {
                 foreach ($group as $attr) {

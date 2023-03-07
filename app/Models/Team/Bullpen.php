@@ -144,7 +144,5 @@ class Bullpen extends PlayerCollection
         } else {
             $this->pitcher = $this->pitchers($rule->bu_sub_roster_position_id);
         }
-
-        dd('substitution made');
     }
 }

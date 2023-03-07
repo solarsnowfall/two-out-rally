@@ -109,7 +109,7 @@ class Team extends Model
 
     public function gambits()
     {
-        return $this->hasMany(Gambit::class);
+        return $this->hasMany(Gambit::class)->orderBy('priority', 'ASC');
     }
 
     public function intangibles(): Intangibles

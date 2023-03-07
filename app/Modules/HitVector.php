@@ -41,7 +41,7 @@ enum HitVector: string
     {
         $grid = [];
 
-        for ($i=0; $i<=6; $i++) {
+        for ($i=1; $i<=6; $i++) {
             $grid[] = $this->value . $i;
         }
 

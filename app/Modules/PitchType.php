@@ -13,6 +13,7 @@ enum PitchType: string
     case Cutter = 'Cutter';
     case Forkball = 'Forkball';
     case FourSeamFastball = 'Four Seam Fastball';
+    case Knuckleball = 'Knuckleball';
     case KnuckleCurve = 'Knuckle Curve';
     case Palmball = 'Palmball';
     case Screwball = 'Screwball';
@@ -21,6 +22,6 @@ enum PitchType: string
     case Slurve = 'Slurve';
     case Splitter = 'Splitter';
     case TwoSeamFastball = 'Two Seam Fastball';
-    case TwoSixCurveball = 'Two-Six Curveball';
+    case TwelveSixCurveball = 'Twelve-Six Curveball';
     case VulcanChange = 'Vulcan Change';
 }

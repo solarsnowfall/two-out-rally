@@ -100,3 +100,22 @@ Route::get('/wpa', function(){
     $wpa = new \App\Sim\WpaTable();
     print_r($wpa->getTree());
 });
+
+Route::get('/loc', function(){
+    $vectors = [
+        \App\Modules\HitVector::A,
+        \App\Modules\HitVector::B,
+        \App\Modules\HitVector::C,
+        \App\Modules\HitVector::D,
+        \App\Modules\HitVector::E,
+        \App\Modules\HitVector::F,
+        \App\Modules\HitVector::G
+    ];
+    /** @var \App\Modules\HitVector $vector */
+    foreach ($vectors as $vector) {
+        for ($i=1; $i<=6; $i++) {
+            echo $vector->description($i) . "\n";
+        }
+        echo "\n";
+    }
+});

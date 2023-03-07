@@ -2,9 +2,12 @@
 
 namespace App\Modules;
 
+use App\Models\Player\Batter;
+
 enum AtBatOutcome: string
 {
     case Hit = 'hit';
+    case HitByPitch = 'hit_by_pitch';
     case Strikeout = 'strikeout';
     case Walk = 'walk';
 

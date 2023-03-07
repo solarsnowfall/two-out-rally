@@ -65,7 +65,10 @@ class PlayerSeeder extends Seeder
         }
     }
 
-    protected function fetchPlayers()
+    /**
+     * @return Player[]
+     */
+    protected function fetchPlayers(): array
     {
         $players = [];
 

@@ -3,6 +3,8 @@
 namespace App\Models\Player\Skill;
 
 use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
+use App\Models\Stats\PitchingStat;
 use App\Modules\BatterFocus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -117,19 +119,29 @@ class BatterSkill extends BasePlayerSkill implements PlayerSkill
         return $this->blend($this->reaction, $this->grace, $this->lower_body);
     }
 
+    public function fieldGroundBall(Pitcher $pitcher, Batter $batter): float
+    {
+        $fgb = $this->defensiveRange() * 0.15;
+        $fgb += $this->fieldCleanly() * 0.05;
+        $fgb -= $batter->skill->grounder() * 0.4;
+        $fgb += $pitcher->skill->avoidGrounder() * 0.2;
+
+        return $fgb / 100;
+    }
+
     public function fieldLineDrive(): float
     {
-        $skill = $this->getFieldCleanly() * 0.15;
-        $skill += $this->getDefensiveRange() * 0.05;
+        $skill = $this->fieldCleanly() * 0.15;
+        $skill += $this->defensiveRange() * 0.05;
 
         return $skill / 100;
     }
 
-    public function fieldLineDriveOutfield(BatterSkill $batterSkill): float
+    public function fieldLineDriveOutfield(Batter $batter): float
     {
-        $skill = $this->getDefensiveRange() * 0.15;
-        $skill += $this->getFieldCleanly() * 0.05;
-        $skill -= $batterSkill->getLineDrivePower() * 0.2;
+        $skill = $this->defensiveRange() * 0.15;
+        $skill += $this->fieldCleanly() * 0.05;
+        $skill -= $batter->skill->lineDrivePower() * 0.2;
 
         return $skill / 100;
     }
@@ -196,4 +208,5 @@ class BatterSkill extends BasePlayerSkill implements PlayerSkill
 
         return Focus::find(Focus::BALANCED);
     }
+
 }

@@ -2,8 +2,12 @@
 
 namespace App\Models\Sim;
 
+use App\Models\Player\Batter;
+use App\Models\Player\Pitcher;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Parental\HasChildren;
 
 /**
  * App\Models\Sim\GameEvent
@@ -30,8 +34,79 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereInning($value)
  * @mixin \Eloquent
+ * @property int $batter_id
+ * @property int $pitcher_id
+ * @property int|null $fielder_id
+ * @property int|null $fielder_id2
+ * @property int|null $fielder_id3
+ * @property string|null $hit_location
+ * @property-read Batter $batter
+ * @property-read Batter|null $fielder
+ * @property-read \App\Models\Sim\Game $game
+ * @property-read Pitcher|null $pitcher
+ * @property-read Batter|null $secondFielder
+ * @property-read Batter|null $thirdFielder
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereBatterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereFielderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereFielderId2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereFielderId3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent whereHitLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GameEvent wherePitcherId($value)
  */
-class GameEvent extends Model
+abstract class GameEvent extends Model
 {
     use HasFactory;
+    use HasChildren;
+
+    public $timestamps = false;
+
+    abstract public function getDescription(): string;
+
+    /**
+     * @return BelongsTo|Game
+     */
+    public function game(): BelongsTo|Game
+    {
+        return $this->belongsTo(Game::class);
+    }
+
+    /**
+     * @return BelongsTo|Batter
+     */
+    public function batter(): BelongsTo|Batter
+    {
+        return $this->belongsTo(Batter::class);
+    }
+
+    /**
+     * @return BelongsTo|Pitcher
+     */
+    public function pitcher(): BelongsTo|Pitcher
+    {
+        return $this->belongsTo(Pitcher::class);
+    }
+
+    /**
+     * @return BelongsTo|Batter
+     */
+    public function fielder(): BelongsTo|Batter
+    {
+        return $this->belongsTo(Batter::class, 'fielder_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo|Batter
+     */
+    public function secondFielder(): BelongsTo|Batter
+    {
+        return $this->belongsTo(Batter::class, 'fielder_id2', 'id');
+    }
+
+    /**
+     * @return BelongsTo|Batter
+     */
+    public function thirdFielder(): BelongsTo|Batter
+    {
+        return $this->belongsTo(Batter::class, 'fielder_id3', 'id');
+    }
 }

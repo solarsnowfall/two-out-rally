@@ -24,12 +24,11 @@ class Gambit
     {
         foreach (['away', 'home'] as $side) {
             /** @var Team $team */
-            foreach ($this->game->$side as $team) {
+            $team = $this->game->$side;
                 /** @var Rule $rule */
-                foreach ($team->gambits as $rule) {
-                    if ($this->checkApplicable($rule)) {
-                        return $rule;
-                    }
+            foreach ($team->gambits as $rule) {
+                if ($this->checkApplicable($rule, $side)) {
+                    return $rule;
                 }
             }
         }
@@ -127,7 +126,7 @@ class Gambit
      */
     public function checkInning(Rule $rule): bool
     {
-        return $rule->inning === $this->game->inning;
+        return  $this->game->inning >= 4 && (!$rule->inning || $rule->inning >= $this->game->inning);
     }
 
     /**
@@ -199,8 +198,8 @@ class Gambit
     public function checkSubstitution(Rule $rule, string $side): bool
     {
         return !$side
-            ? $this->game->home->bullpen->checkSubstitutionMade($rule->substitutePosition)
-            : $this->game->away->bullpen->checkSubstitutionMade($rule->backupSubstitutePosition);
+            ? !$this->game->home->bullpen->checkSubstitutionMade($rule->substitutePosition)
+            : !$this->game->away->bullpen->checkSubstitutionMade($rule->backupSubstitutePosition);
     }
 
     private function checkLeverageRuns(Rule $rule): bool

@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Sim\Fielding\Location;
+
+{{ using }}
+
+class {{ class }} extends FieldLocation
+{
+    public function fieldBall()
+    {
+        // Fielding logic goes here...
+    }
+
+    public function fielder(): ?{{ fielder-class }}
+    {
+        return {{ fielder }};
+    }
+}

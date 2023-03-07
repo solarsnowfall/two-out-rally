@@ -121,16 +121,12 @@ class WpaTable
         }
     }
 
-    private function branchKey(string $key, WpaCondition $wpa)
+    private function branchKey(string $key, WpaCondition $wpa): string
     {
-        switch ($key) {
-            case 'inning':
-            case 'batting':
-            case 'outs':
-                return $wpa->$key;
-            case 'bases':
-                return $wpa->first . $wpa->second . $wpa->third;
-        }
+        return match($key) {
+            'inning', 'batting', 'outs' => $wpa->$key,
+            'bases' => $wpa->first . $wpa->second . $wpa->third
+        };
     }
 
     public function getTree()
@@ -142,10 +138,11 @@ class WpaTable
     {
         $inning = $this->gameInningKey($game);
         $side = Side::toString($game->side);
+        $outs = $game->outs <= 2 ? $game->outs : 0;
         $bases = $this->gameBasesKey($game);
         $runs = $this->gameRunsKey($game);
 
-        return $this->tree[$inning][$side][$game->outs][$bases][$runs];
+        return $this->tree[$inning][$side][$outs][$bases][$runs];
     }
 
     public function gameBasesKey(Game $game): string
@@ -161,7 +158,8 @@ class WpaTable
 
     public function gameInningKey(Game $game)
     {
-        return min($game->inning, 10);
+        $inning = $game->outs < 3 ? $game->inning : $game->inning + 1;
+        return min($inning, 10);
     }
 
     public function gameRunsKey(Game $game): string

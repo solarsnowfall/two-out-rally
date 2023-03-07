@@ -9,4 +9,15 @@ enum HitType: string
     case GroundBall = 'ground ball';
     case LineDrive = 'line drive';
     case PopUp = 'pop up';
+
+    public function outType(): ?string
+    {
+        return match($this) {
+            HitType::BaseHit => null,
+            HitType::FlyBall => 'flyout',
+            HitType::GroundBall => 'groundout',
+            HitType::LineDrive => 'lineout',
+            HitType::PopUp => 'pop out'
+        };
+    }
 }

@@ -12,17 +12,17 @@ class AtBat
      */
     public Batter $batter;
 
-    public HitLocation $hitLocation;
+    public ?HitLocation $hitLocation = null;
 
     /**
      * @var HitType
      */
-    public HitType $hitType;
+    public ?HitType $hitType = null;
 
     /**
      * @var HitVector
      */
-    public HitVector $hitVector;
+    public ?HitVector $hitVector = null;
 
     /**
      * @var AtBatOutcome
