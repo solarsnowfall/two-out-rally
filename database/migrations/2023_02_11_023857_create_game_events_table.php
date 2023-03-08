@@ -41,7 +41,7 @@ return new class extends Migration
             ]);
 
             $table->unsignedTinyInteger('pitch_count')->default(0);
-            $table->point('pitch_location')->nullable()->default(null);
+            $table->json('pitch_location')->nullable()->default(null);
 
             $table->enum('pitch_type', [
                 PitchType::Changeup->value,
@@ -86,7 +86,7 @@ return new class extends Migration
                 ...HitVector::G->grid()
             ])->nullable();
 
-            $table->point('hit_location')->nullable()->default(null);
+            $table->json('hit_location')->nullable()->default(null);
 
             $table->enum('base_progress', [
                 BaseProgression::Single->value,

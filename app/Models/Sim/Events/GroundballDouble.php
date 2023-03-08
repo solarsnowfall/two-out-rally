@@ -5,6 +5,70 @@ namespace App\Models\Sim\Events;
 use App\Models\Sim\GameEvent;
 use Parental\HasParent;
 
+/**
+ * App\Models\Sim\Events\GroundballDouble
+ *
+ * @property int $id
+ * @property int $game_id
+ * @property int $inning
+ * @property string $batting
+ * @property string $outs
+ * @property string $line_score
+ * @property int $batter_id
+ * @property int $pitcher_id
+ * @property int|null $fielder_id
+ * @property int|null $fielder_id2
+ * @property int|null $fielder_id3
+ * @property string $fielders
+ * @property string $at_bat
+ * @property int $pitch_count
+ * @property string|null $pitch_location
+ * @property string $pitch_type
+ * @property int|null $pitch_speed
+ * @property int $balls
+ * @property int $strikes
+ * @property string $strike_type
+ * @property string|null $hit_type
+ * @property string|null $hit_zone
+ * @property string|null $hit_location
+ * @property string|null $base_progress
+ * @property string $bases
+ * @property-read \App\Models\Player\Batter $batter
+ * @property-read \App\Models\Player\Batter|null $fielder
+ * @property-read \App\Models\Sim\Game $game
+ * @property-read \App\Models\Player\Pitcher $pitcher
+ * @property-read \App\Models\Player\Batter|null $secondFielder
+ * @property-read \App\Models\Player\Batter|null $thirdFielder
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble query()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereAtBat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereBalls($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereBaseProgress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereBases($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereBatterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereBatting($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereFielderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereFielderId2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereFielderId3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereFielders($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereGameId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereHitLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereHitType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereHitZone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereInning($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereLineScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereOuts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble wherePitchCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble wherePitchLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble wherePitchSpeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble wherePitchType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble wherePitcherId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereStrikeType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroundballDouble whereStrikes($value)
+ * @mixin \Eloquent
+ */
 class GroundballDouble extends GameEvent
 {
     use HasParent;
