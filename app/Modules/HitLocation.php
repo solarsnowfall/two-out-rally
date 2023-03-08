@@ -13,6 +13,13 @@ class HitLocation
         $this->distance = $distance;
     }
 
+    public static function zoneDescription(string $zone)
+    {
+        list($vector, $distance) = str_split($zone);
+
+        return HitVector::fromValue($vector)->description($distance);
+    }
+
     /**
      * @return string
      */
@@ -23,6 +30,6 @@ class HitLocation
 
     public function getDescription(): string
     {
-        return '';
+        return $this->vector->description($this->distance);
     }
 }

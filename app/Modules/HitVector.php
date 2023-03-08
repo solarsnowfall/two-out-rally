@@ -2,6 +2,8 @@
 
 namespace App\Modules;
 
+use InvalidArgumentException;
+
 enum HitVector: string
 {
     case A = 'a';
@@ -35,6 +37,28 @@ enum HitVector: string
             HitVector::F => ' right field',
             HitVector::G => ' right field line'
         };
+    }
+
+    public static function fromName(string $name): self
+    {
+        foreach (self::cases() as $hitVector) {
+            if ($hitVector->name === $name) {
+                return $hitVector;
+            }
+        }
+
+        throw new InvalidArgumentException("Case '$name' not found");
+    }
+
+    public static function fromValue(string $value): self
+    {
+        foreach (self::cases() as $hitVector) {
+            if ($hitVector->value === $value) {
+                return $hitVector;
+            }
+        }
+
+        throw new InvalidArgumentException("No case matching value '$value'");
     }
 
     public function grid(): array
